@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Administração FACOP</title>
+    <title>Login - Administração CGADRB</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #050505; color: white;}
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="relative z-10 w-full max-w-md p-8 bg-[#0a0a0c] border border-white/10 rounded-3xl shadow-2xl">
         <div class="text-center mb-8">
-            <h1 class="text-2xl font-bold tracking-tighter">FACOP<span class="text-[#00ffcc]">.</span>Admin</h1>
+            <h1 class="text-2xl font-bold tracking-tighter">CGADRB<span class="text-[#00ffcc]">.</span>Admin</h1>
             <p class="text-gray-500 font-mono text-xs mt-2 uppercase tracking-widest">Acesso Restrito</p>
         </div>
 

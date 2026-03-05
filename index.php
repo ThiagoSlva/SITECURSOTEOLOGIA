@@ -79,7 +79,7 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="absolute inset-0 bg-black/60 z-10"></div>
                 <div class="absolute top-8 left-8 right-8 z-0 font-mono text-[10px] text-cobalt-accent/60 leading-relaxed overflow-hidden">
                     <p class="animate-pulse">> INICIANDO COMUNICAÇÃO...</p>
-                    <p>> CARREGANDO CERTIFICADO FACOP [OK]</p>
+                    <p>> CARREGANDO CERTIFICADO CGADRB [OK]</p>
                     <p>> ESTABELECENDO CONEXÃO SEGURA PARA CHECKOUT</p>
                     <p>> AGUARDANDO AÇÃO DO ESTUDANTE_</p>
                 </div>

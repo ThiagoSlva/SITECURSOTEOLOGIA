@@ -11,7 +11,7 @@ require_login();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Administrativo - FACOP</title>
+    <title>Painel Administrativo - CGADRB</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #050505; color: white;}
@@ -23,7 +23,7 @@ require_login();
     <aside class="w-64 bg-[#0a0a0c] border-r border-white/10 flex flex-col h-screen sticky top-0">
         <div class="p-6 border-b border-white/10">
             <a href="index.php" class="block mb-1">
-                <img src="/assets/images/logotipo.jpeg" alt="FACOP Admin" class="h-10 w-auto rounded-lg object-contain shadow-md border border-white/10">
+                <img src="/assets/images/logotipo.jpeg" alt="CGADRB Admin" class="h-10 w-auto rounded-lg object-contain shadow-md border border-white/10">
             </a>
             <p class="text-gray-500 font-mono text-[10px] mt-1 uppercase tracking-widest">Painel de Controle</p>
         </div>

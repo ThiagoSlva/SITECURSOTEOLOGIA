@@ -4,7 +4,7 @@
         <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12">
             <div>
                 <a href="/" class="block mb-6">
-                    <img src="/assets/images/logotipo.jpeg" alt="FACOP" class="h-14 w-auto rounded-2xl object-contain shadow-lg border border-white/10">
+                    <img src="/assets/images/logotipo.jpeg" alt="CGADRB" class="h-14 w-auto rounded-2xl object-contain shadow-lg border border-white/10">
                 </a>
                 <p class="text-gray-400 text-sm max-w-sm mb-6 font-mono">
                     Formação teológica de excelência com certificação reconhecida. Combinando tradição cristã e rigor acadêmico.
@@ -30,7 +30,7 @@
         </div>
         
         <div class="max-w-7xl mx-auto px-6 mt-24 pt-8 border-t border-deep-border/50 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p class="text-gray-600 font-mono text-xs">© <?php echo date('Y'); ?> Instituto Teológico FACOP. Todos os direitos reservados.</p>
+            <p class="text-gray-600 font-mono text-xs">© <?php echo date('Y'); ?> Instituto Teológico CGADRB. Todos os direitos reservados.</p>
         </div>
     </footer>
 

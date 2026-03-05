@@ -16,7 +16,7 @@ $posts = $stmt->fetchAll();
             Arquivo <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-accent to-cobalt-accent font-serif italic">Teológico</span>
         </h1>
         <p class="text-gray-400 max-w-2xl mx-auto text-lg gsap-reveal">
-            Artigos, reflexões e conteúdos profundos curados pela coordenação da FACOP.
+            Artigos, reflexões e conteúdos profundos curados pela coordenação da CGADRB.
         </p>
     </div>
 </section>

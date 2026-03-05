@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // 2. Create Charge (We'll default to PIX for this example checkout)
             $dueDate = date('Y-m-d', strtotime('+3 days'));
-            $desc = "Matrícula FACOP: " . $course['title'];
+            $desc = "Matrícula CGADRB: " . $course['title'];
             $chargeRes = asaas_create_pix_charge($asaas_customer_id, $course['price'], $desc, $dueDate);
 
             if (isset($chargeRes['error']) && $chargeRes['error']) {

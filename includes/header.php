@@ -8,7 +8,7 @@ require_once __DIR__ . '/db.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FACOP - Cursos de Extensão Universitária</title>
+    <title>CGADRB - Cursos de Extensão Universitária</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -63,7 +63,7 @@ require_once __DIR__ . '/db.php';
     <nav id="navbar" class="fixed top-6 left-1/2 -translate-x-1/2 z-40 w-[90%] max-w-4xl rounded-full border border-deep-border bg-deep-surface/40 backdrop-blur-xl transition-all duration-500">
         <div class="px-6 py-4 flex items-center justify-between">
             <a href="/" class="flex items-center">
-                <img src="assets/images/logotipo.jpeg" alt="FACOP" class="h-12 w-auto rounded-xl object-contain shadow-lg border border-white/10">
+                <img src="assets/images/logotipo.jpeg" alt="CGADRB" class="h-12 w-auto rounded-xl object-contain shadow-lg border border-white/10">
             </a>
             
             <div class="hidden md:flex items-center gap-8">

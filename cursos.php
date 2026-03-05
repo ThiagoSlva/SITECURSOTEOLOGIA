@@ -16,7 +16,7 @@ $courses = $stmt->fetchAll();
             Catálogo de <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-accent to-cobalt-accent font-serif italic">Cursos</span>
         </h1>
         <p class="text-gray-400 max-w-2xl mx-auto text-lg gsap-reveal">
-            Formação teológica avançada. Selecione sua área de especialização e inicie sua jornada acadêmica com certificação FACOP.
+            Formação teológica avançada. Selecione sua área de especialização e inicie sua jornada acadêmica com certificação CGADRB.
         </p>
     </div>
 </section>
