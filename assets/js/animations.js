@@ -105,4 +105,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+
+    // 6. Final Reveal (WhatsApp)
+    gsap.to("#whatsapp-btn", {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "power3.out",
+        delay: 1.5
+    });
 });
