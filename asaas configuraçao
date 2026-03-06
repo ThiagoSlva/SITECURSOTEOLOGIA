@@ -1,0 +1,7 @@
+O que você precisa configurar lá no site do Asaas para ligar isso (quando for colocar o site no ar):
+
+Acesse o Asaas e vá em Integrações > Webhooks.
+Clique em Criar Webhook (para Cobranças).
+No campo URL, você vai colar o endereço da sua loja apontando para esse arquivo. Exemplo: https://sua-loja.com.br/webhook_asaas.php
+Deixe marcado para ele enviar eventos de: Pagamento Confirmado, Pagamento Recebido e Pagamento Estornado.
+Salve!
