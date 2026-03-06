@@ -19,13 +19,13 @@ require_login();
 </head>
 <body class="min-h-screen flex">
 
-    <!-- Sidebar -->
-    <aside class="w-64 bg-[#0a0a0c] border-r border-white/10 flex flex-col h-screen sticky top-0">
-        <div class="p-6 border-b border-white/10">
+    <!-- Sidebar (Slimmed) -->
+    <aside class="w-56 bg-[#0a0a0c] border-r border-white/10 flex flex-col h-screen sticky top-0">
+        <div class="p-5 border-b border-white/10">
             <a href="index.php" class="block mb-1">
-                <img src="/assets/images/logotipo.jpeg" alt="CGADRB Admin" class="h-10 w-auto rounded-lg object-contain shadow-md border border-white/10">
+                <img src="/assets/images/logotipo.jpeg" alt="CGADRB Admin" class="h-8 w-auto rounded-lg object-contain shadow-md border border-white/10">
             </a>
-            <p class="text-gray-500 font-mono text-[10px] mt-1 uppercase tracking-widest">Painel de Controle</p>
+            <p class="text-gray-500 font-mono text-[9px] mt-1 uppercase tracking-widest leading-none">Painel de Controle</p>
         </div>
         
         <nav class="flex-grow p-4 space-y-2 font-mono text-sm">

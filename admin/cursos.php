@@ -30,14 +30,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             $error = "Preço inválido.";
         }
         else {
-            try {
-                $stmt = $pdo->prepare("INSERT INTO courses (title, slug, description, price, features_json, status) VALUES (?, ?, ?, ?, ?, 'active')");
-                $stmt->execute([$title, $slug, $desc, $price, $features_json]);
-                $success = "Curso criado com sucesso e ativo na plataforma.";
+            // Handle Image Upload
+            $image_url = null;
+            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                $upload_dir = __DIR__ . '/../assets/images/cursos/';
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0755, true);
+                }
+
+                $file_extension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+                $allowed_exts = ['jpg', 'jpeg', 'png', 'webp'];
+
+                if (in_array($file_extension, $allowed_exts)) {
+                    $new_filename = uniqid('curso_') . '.' . $file_extension;
+                    $upload_path = $upload_dir . $new_filename;
+
+                    if (move_uploaded_file($_FILES['image']['tmp_name'], $upload_path)) {
+                        $image_url = '/assets/images/cursos/' . $new_filename;
+                    }
+                    else {
+                        $error = "Erro ao salvar a imagem do curso.";
+                    }
+                }
+                else {
+                    $error = "Formato de imagem inválido. Use JPG, PNG ou WEBP.";
+                }
             }
-            catch (PDOException $e) {
-                // If slug duplicate or other constraint
-                $error = "Erro ao criar curso. Verifique se o nome já existe.";
+
+            if (empty($error)) {
+                try {
+                    $stmt = $pdo->prepare("INSERT INTO courses (title, slug, description, price, features_json, status, image_url) VALUES (?, ?, ?, ?, ?, 'active', ?)");
+                    $stmt->execute([$title, $slug, $desc, $price, $features_json, $image_url]);
+                    $success = "Curso criado com sucesso e ativo na plataforma.";
+                }
+                catch (PDOException $e) {
+                    $error = "Erro ao criar curso. Verifique se o nome já existe.";
+                }
             }
         }
     }
@@ -87,11 +115,16 @@ endif; ?>
                 <span class="w-2 h-2 rounded-full bg-[#00ffcc]"></span> Adicionar Curso
             </h3>
             
-            <form method="POST" action="">
+            <form method="POST" action="" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
                 <input type="hidden" name="action" value="create">
                 
                 <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-mono text-gray-400 mb-2 uppercase">Imagem (Capa)</label>
+                        <input type="file" name="image" accept="image/jpeg, image/png, image/webp" class="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#00ffcc] text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-[#00ffcc] file:text-black hover:file:bg-white cursor-pointer">
+                    </div>
+                    
                     <div>
                         <label class="block text-xs font-mono text-gray-400 mb-2 uppercase">Título</label>
                         <input type="text" name="title" required class="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#00ffcc] text-sm">
@@ -139,9 +172,19 @@ endif; ?>
 else: ?>
                         <?php foreach ($courses as $c): ?>
                             <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
-                                <td class="px-6 py-4">
-                                    <p class="text-white font-medium mb-1"><?php echo sanitize_output($c['title']); ?></p>
-                                    <p class="text-xs line-clamp-1 max-w-sm"><?php echo sanitize_output($c['description']); ?></p>
+                                <td class="px-6 py-4 flex items-center gap-4">
+                                    <?php if (!empty($c['image_url'])): ?>
+                                        <img src="<?php echo sanitize_output($c['image_url']); ?>" alt="Capa" class="w-12 h-12 object-cover rounded-lg border border-white/10">
+                                    <?php
+        else: ?>
+                                        <div class="w-12 h-12 bg-white/5 rounded-lg border border-white/10 flex items-center justify-center text-gray-500 font-mono text-[10px]">SEM IMAGEM</div>
+                                    <?php
+        endif; ?>
+                                    
+                                    <div>
+                                        <p class="text-white font-medium mb-1"><?php echo sanitize_output($c['title']); ?></p>
+                                        <p class="text-xs line-clamp-1 max-w-sm"><?php echo sanitize_output($c['description']); ?></p>
+                                    </div>
                                 </td>
                                 <td class="px-6 py-4 text-[#00ffcc] font-mono">R$ <?php echo number_format($c['price'], 2, ',', '.'); ?></td>
                                 <td class="px-6 py-4">

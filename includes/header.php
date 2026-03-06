@@ -59,16 +59,16 @@ require_once __DIR__ . '/db.php';
         </svg>
     </div>
 
-    <!-- The Floating Island Navbar -->
-    <nav id="navbar" class="fixed top-6 left-1/2 -translate-x-1/2 z-40 w-[90%] max-w-4xl rounded-full border border-deep-border bg-deep-surface/40 backdrop-blur-xl transition-all duration-500">
-        <div class="px-6 py-4 flex items-center justify-between">
+    <!-- The Floating Island Navbar (Slimmed) -->
+    <nav id="navbar" class="fixed top-0 left-1/2 -translate-x-1/2 z-40 w-full max-w-5xl rounded-b-3xl border-x border-b border-deep-border bg-deep-surface/40 backdrop-blur-xl transition-all duration-500">
+        <div class="px-8 py-3 flex items-center justify-between">
             <a href="/" class="flex items-center">
-                <img src="assets/images/logotipo.jpeg" alt="CGADRB" class="h-12 w-auto rounded-xl object-contain shadow-lg border border-white/10">
+                <img src="assets/images/logotipo.jpeg" alt="CGADRB" class="h-9 w-auto rounded-lg object-contain shadow-lg border border-white/10">
             </a>
             
             <div class="hidden md:flex items-center gap-8">
-                <a href="/cursos.php" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">Cursos</a>
-                <a href="/blog.php" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">Blog</a>
+                <a href="/cursos.php" class="text-xs font-mono uppercase tracking-widest text-gray-400 hover:text-white transition-colors">Cursos</a>
+                <a href="/blog.php" class="text-xs font-mono uppercase tracking-widest text-gray-400 hover:text-white transition-colors">Blog</a>
             </div>
             
             <!-- Mobile Menu Button -->
@@ -78,7 +78,7 @@ require_once __DIR__ . '/db.php';
                 </svg>
             </button>
             
-            <a href="#planos" class="hidden md:block px-4 py-2 sm:px-5 rounded-full bg-neon-accent text-black text-xs sm:text-sm font-semibold hover:bg-neon-hover transition-colors whitespace-nowrap">Comprar Curso</a>
+            <a href="#planos" class="hidden md:block px-6 py-2 rounded-full bg-neon-accent text-black text-[10px] font-bold uppercase tracking-widest hover:bg-neon-hover transition-colors whitespace-nowrap">Comprar Curso</a>
         </div>
         
         <!-- Mobile Menu -->

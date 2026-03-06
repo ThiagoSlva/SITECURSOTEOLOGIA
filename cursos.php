@@ -36,12 +36,21 @@ else: ?>
                 <?php foreach ($courses as $index => $course): ?>
                     <div class="rounded-3xl border border-deep-border/50 bg-black/40 backdrop-blur-md p-8 hover:border-neon-accent/50 hover:bg-black transition-all duration-500 group flex flex-col h-full gsap-reveal">
                         
-                        <div class="mb-4">
-                            <span class="inline-block px-3 py-1 bg-white/5 text-gray-400 text-[10px] font-mono rounded-full tracking-widest uppercase">ID: <?php echo str_pad($course['id'], 3, '0', STR_PAD_LEFT); ?></span>
-                        </div>
+                        <?php if (!empty($course['image_url'])): ?>
+                            <div class="h-48 -mx-8 -mt-8 mb-6 overflow-hidden rounded-t-3xl border-b border-white/10 relative">
+                                <div class="absolute inset-0 bg-black/20 z-10 group-hover:bg-transparent transition-colors"></div>
+                                <img src="<?php echo sanitize_output($course['image_url']); ?>" alt="Capa" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
+                            </div>
+                        <?php
+        else: ?>
+                            <div class="mb-4">
+                                <span class="inline-block px-3 py-1 bg-white/5 text-gray-400 text-[10px] font-mono rounded-full tracking-widest uppercase">ID: <?php echo str_pad($course['id'], 3, '0', STR_PAD_LEFT); ?></span>
+                            </div>
+                        <?php
+        endif; ?>
 
                         <h3 class="text-2xl font-bold mb-3 group-hover:text-[#00ffcc] transition-colors"><?php echo sanitize_output($course['title']); ?></h3>
-                        <p class="text-gray-400 text-sm mb-8 leading-relaxed line-clamp-3"><?php echo sanitize_output($course['description']); ?></p>
+                        <p class="text-gray-400 text-sm mb-6 leading-relaxed line-clamp-3"><?php echo sanitize_output($course['description']); ?></p>
                         
                         <div class="mb-8">
                             <span class="text-4xl font-light tracking-tighter">R$ <?php echo number_format($course['price'], 2, ',', '.'); ?></span>
@@ -70,8 +79,8 @@ else: ?>
         endif; ?>
 
                         <div class="pt-6 border-t border-white/5 mt-auto">
-                            <a href="checkout.php?curso=<?php echo $course['id']; ?>" class="w-full py-4 flex items-center justify-between px-6 rounded-xl border border-white/20 text-sm font-semibold hover:bg-[#00ffcc] hover:text-black hover:border-[#00ffcc] transition-colors group/btn">
-                                <span>Iniciar Admissão</span>
+                            <a href="curso-single.php?slug=<?php echo sanitize_output($course['slug']); ?>" class="w-full py-4 flex items-center justify-between px-6 rounded-xl border border-white/20 text-sm font-semibold hover:bg-[#00ffcc] hover:text-black hover:border-[#00ffcc] transition-colors group/btn">
+                                <span>Ver Detalhes do Curso</span>
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="group-hover/btn:translate-x-1 transition-transform"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </a>
                         </div>

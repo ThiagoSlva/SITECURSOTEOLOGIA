@@ -14,6 +14,8 @@ require_once __DIR__ . '/includes/header.php';
     <!-- Conteúdo Hero -->
     <div class="relative z-10 px-6 max-w-7xl mx-auto w-full">
         <div class="max-w-4xl pt-32">
+            <img src="assets/images/brasao.jpeg" alt="Brasão CGADRB" class="w-24 md:w-32 h-auto mb-6 rounded-lg border border-white/5 shadow-2xl gsap-reveal">
+            
             <p class="font-mono text-neon-accent text-sm tracking-[0.2em] mb-4 uppercase gsap-reveal">Sistema de Formação Acadêmica v1.0</p>
             
             <h1 class="text-[clamp(2.5rem,7vw,6rem)] leading-[0.9] tracking-tighter text-white font-sans font-bold gsap-reveal">
@@ -162,8 +164,16 @@ else: ?>
                         <?php
         endif; ?>
 
+                        <?php if (!empty($course['image_url'])): ?>
+                            <div class="h-48 -mx-8 -mt-8 mb-6 overflow-hidden rounded-t-3xl border-b border-white/10 relative">
+                                <div class="absolute inset-0 bg-black/20 z-10 group-hover:bg-transparent transition-colors"></div>
+                                <img src="<?php echo sanitize_output($course['image_url']); ?>" alt="Capa" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
+                            </div>
+                        <?php
+        endif; ?>
+
                         <h3 class="text-2xl font-bold mb-2"><?php echo sanitize_output($course['title']); ?></h3>
-                        <p class="text-gray-400 text-sm mb-8 leading-relaxed line-clamp-2"><?php echo sanitize_output($course['description']); ?></p>
+                        <p class="text-gray-400 text-sm mb-6 leading-relaxed line-clamp-2"><?php echo sanitize_output($course['description']); ?></p>
                         
                         <div class="mb-8">
                             <span class="text-4xl font-light tracking-tighter">R$ <?php echo number_format($course['price'], 2, ',', '.'); ?></span>
@@ -188,8 +198,8 @@ else: ?>
                         <?php
         endif; ?>
 
-                        <a href="checkout.php?curso=<?php echo $course['id']; ?>" class="w-full py-4 text-center rounded-xl text-sm font-semibold transition-colors <?php echo($index == 1) ? 'bg-neon-accent text-black hover:bg-white' : 'bg-white text-black hover:bg-gray-200'; ?>">
-                            Iniciar Check-out Externo
+                        <a href="curso-single.php?slug=<?php echo sanitize_output($course['slug']); ?>" class="w-full py-4 text-center rounded-xl text-sm font-semibold transition-colors <?php echo($index == 1) ? 'bg-neon-accent text-black hover:bg-white' : 'bg-white text-black hover:bg-gray-200'; ?>">
+                            Ver Detalhes
                         </a>
                     </div>
                 <?php
