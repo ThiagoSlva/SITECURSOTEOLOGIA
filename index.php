@@ -211,4 +211,22 @@ endif; ?>
     </div>
 </section>
 
+<!-- SECTION G: AMPARO LEGAL -->
+<section class="py-16 bg-black border-t border-white/5 relative z-10">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+        <div class="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 text-gray-500">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4M12 16h.01"/></svg>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-widest font-mono">Amparo Legal & Credenciamento</h3>
+        <p class="text-gray-400 text-sm leading-relaxed font-light">
+            Os cursos oferecidos por nossa instituição são classificados como "Cursos Livres de Formação e Qualificação Profissional/Eclesiástica". 
+            Eles são válidos em todo o território nacional e estão amparados pela <strong class="text-white">Lei nº 9.394/96 (Lei de Diretrizes e Bases da Educação Nacional)</strong>, 
+            pelo <strong class="text-white">Decreto Presidencial nº 5.154/04</strong> e deliberações do <strong class="text-white">CEE 14/97 (Indicação CEE 14/97)</strong>.
+        </p>
+        <p class="text-gray-500 text-xs leading-relaxed font-mono mt-4">
+            Em conformidade com a legislação educacional brasileira, cursos livres de atualização e qualificação profissional não dependem de autorização, reconhecimento ou aprovação do Ministério da Educação (MEC) ou do Conselho Estadual de Educação (CEE). O objetivo primordial é proporcionar o desenvolvimento de novas competências, capacitação teológica e aprimoramento contínuo.
+        </p>
+    </div>
+</section>
+
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

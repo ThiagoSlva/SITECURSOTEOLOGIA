@@ -10,8 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Token CSRF inválido.";
     }
     else {
-        $asaas_key = filter_input(INPUT_POST, 'asaas_api_key', FILTER_SANITIZE_STRING);
-        $whatsapp = filter_input(INPUT_POST, 'whatsapp_number', FILTER_SANITIZE_STRING);
+        $asaas_key = trim($_POST['asaas_api_key'] ?? '');
+        $whatsapp = trim($_POST['whatsapp_number'] ?? '');
         $fb = filter_input(INPUT_POST, 'social_facebook', FILTER_SANITIZE_URL);
         $ig = filter_input(INPUT_POST, 'social_instagram', FILTER_SANITIZE_URL);
         $tw = filter_input(INPUT_POST, 'social_twitter', FILTER_SANITIZE_URL);
@@ -19,8 +19,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $li = filter_input(INPUT_POST, 'social_linkedin', FILTER_SANITIZE_URL);
         $tt = filter_input(INPUT_POST, 'social_tiktok', FILTER_SANITIZE_URL);
 
-        $stmt = $pdo->prepare("UPDATE settings SET asaas_api_key = ?, whatsapp_number = ?, social_facebook = ?, social_instagram = ?, social_twitter = ?, social_threads = ?, social_linkedin = ?, social_tiktok = ? WHERE id = 1");
-        if ($stmt->execute([$asaas_key, $whatsapp, $fb, $ig, $tw, $th, $li, $tt])) {
+        $smtp_host = filter_input(INPUT_POST, 'smtp_host', FILTER_SANITIZE_STRING);
+        $smtp_user = filter_input(INPUT_POST, 'smtp_user', FILTER_SANITIZE_STRING);
+        $smtp_pass = filter_input(INPUT_POST, 'smtp_pass', FILTER_SANITIZE_STRING);
+        $smtp_port = filter_input(INPUT_POST, 'smtp_port', FILTER_VALIDATE_INT);
+        $smtp_secure = filter_input(INPUT_POST, 'smtp_secure', FILTER_SANITIZE_STRING);
+
+        $stmt = $pdo->prepare("UPDATE settings SET asaas_api_key = ?, whatsapp_number = ?, social_facebook = ?, social_instagram = ?, social_twitter = ?, social_threads = ?, social_linkedin = ?, social_tiktok = ?, smtp_host = ?, smtp_user = ?, smtp_pass = ?, smtp_port = ?, smtp_secure = ? WHERE id = 1");
+        if ($stmt->execute([$asaas_key, $whatsapp, $fb, $ig, $tw, $th, $li, $tt, $smtp_host, $smtp_user, $smtp_pass, $smtp_port, $smtp_secure])) {
             $success = "Configurações atualizadas com sucesso.";
         }
         else {
@@ -60,9 +66,43 @@ endif; ?>
         <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
         
         <div class="mb-6">
-            <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-wide">Asaas API Key (Token)</label>
+            <h3 class="text-white font-bold mb-4 font-mono text-sm tracking-widest uppercase border-b border-white/5 pb-2">Integrações de API</h3>
+            <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-wide mt-4">Asaas API Key (Token)</label>
             <input type="password" name="asaas_api_key" value="<?php echo sanitize_output($settings['asaas_api_key'] ?? ''); ?>" placeholder="$aact_..." class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#00ffcc] transition-colors font-mono text-sm">
-            <p class="mt-2 text-xs text-gray-500 font-mono">Usado para gerar cobranças Pix via API oficial.</p>
+            <p class="mt-2 text-xs text-gray-500 font-mono mb-4">Usado para gerar cobranças Pix via API oficial.</p>
+
+            <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-wide">WhatsApp Atendimento</label>
+            <input type="text" name="whatsapp_number" value="<?php echo sanitize_output($settings['whatsapp_number'] ?? ''); ?>" placeholder="5511999999999" class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#00ffcc] transition-colors font-mono text-sm">
+        </div>
+
+        <div class="mb-6 border-t border-white/5 pt-6">
+            <h3 class="text-white font-bold mb-4 font-mono text-sm tracking-widest uppercase border-b border-white/5 pb-2 text-neon-accent">Servidor de E-mail (SMTP)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-wide">SMTP Host</label>
+                    <input type="text" name="smtp_host" value="<?php echo sanitize_output($settings['smtp_host'] ?? ''); ?>" placeholder="mail.seudominio.com.br" class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#00ffcc] transition-colors font-mono text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-wide">Usuário SMTP / E-mail</label>
+                    <input type="text" name="smtp_user" value="<?php echo sanitize_output($settings['smtp_user'] ?? ''); ?>" placeholder="naoresponda@seudominio.com" class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#00ffcc] transition-colors font-mono text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-wide">Senha SMTP</label>
+                    <input type="password" name="smtp_pass" value="<?php echo sanitize_output($settings['smtp_pass'] ?? ''); ?>" placeholder="********" class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#00ffcc] transition-colors font-mono text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-wide">Porta SMTP</label>
+                    <input type="number" name="smtp_port" value="<?php echo sanitize_output($settings['smtp_port'] ?? '465'); ?>" placeholder="465" class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#00ffcc] transition-colors font-mono text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-wide">Segurança</label>
+                    <select name="smtp_secure" class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#00ffcc] transition-colors font-mono text-sm">
+                        <option value="ssl" <?php echo($settings['smtp_secure'] === 'ssl') ? 'selected' : ''; ?>>SSL</option>
+                        <option value="tls" <?php echo($settings['smtp_secure'] === 'tls') ? 'selected' : ''; ?>>TLS</option>
+                        <option value="none" <?php echo($settings['smtp_secure'] === 'none') ? 'selected' : ''; ?>>Nenhum (Inseguro)</option>
+                    </select>
+                </div>
+            </div>
         </div>
         
         <div class="mb-6 border-t border-white/5 pt-6">

@@ -32,7 +32,8 @@ require_login();
             <a href="index.php" class="block py-2 px-4 rounded hover:bg-white/5 transition-colors">📄 Dashboard</a>
             <a href="cursos.php" class="block py-2 px-4 rounded hover:bg-white/5 transition-colors">🎓 Cursos</a>
             <a href="blog.php" class="block py-2 px-4 rounded hover:bg-white/5 transition-colors">✍️ Artigos (Blog)</a>
-            <a href="configuracoes.php" class="block py-2 px-4 rounded hover:bg-white/5 transition-colors">⚙️ Integrações (Asaas)</a>
+            <a href="emails.php" class="block py-2 px-4 rounded hover:bg-white/5 transition-colors">✉️ E-mails do Sistema</a>
+            <a href="configuracoes.php" class="block py-2 px-4 rounded hover:bg-white/5 transition-colors">⚙️ Configurações App</a>
         </nav>
 
         <div class="p-4 border-t border-white/10">

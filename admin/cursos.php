@@ -5,12 +5,14 @@ require_once __DIR__ . '/includes/admin_header.php';
 $success = '';
 $error = '';
 
-// Handle Course Creation
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'create') {
+// Handle Course Creation/Update
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
         $error = "Token CSRF inválido.";
     }
     else {
+        $action = $_POST['action'];
+        $course_id = filter_input(INPUT_POST, 'course_id', FILTER_VALIDATE_INT);
         $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_STRING);
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $title)));
         $desc = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
@@ -31,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         }
         else {
             // Handle Image Upload
-            $image_url = null;
+            $image_url = $_POST['existing_image'] ?? null;
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
                 $upload_dir = __DIR__ . '/../assets/images/cursos/';
                 if (!is_dir($upload_dir)) {
@@ -59,25 +61,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
             if (empty($error)) {
                 try {
-                    $stmt = $pdo->prepare("INSERT INTO courses (title, slug, description, price, features_json, status, image_url) VALUES (?, ?, ?, ?, ?, 'active', ?)");
-                    $stmt->execute([$title, $slug, $desc, $price, $features_json, $image_url]);
-                    $success = "Curso criado com sucesso e ativo na plataforma.";
+                    if ($action === 'create') {
+                        $stmt = $pdo->prepare("INSERT INTO courses (title, slug, description, price, features_json, status, image_url) VALUES (?, ?, ?, ?, ?, 'active', ?)");
+                        $stmt->execute([$title, $slug, $desc, $price, $features_json, $image_url]);
+                        $success = "Curso criado com sucesso.";
+                    }
+                    elseif ($action === 'update' && $course_id) {
+                        $stmt = $pdo->prepare("UPDATE courses SET title = ?, slug = ?, description = ?, price = ?, features_json = ?, image_url = ? WHERE id = ?");
+                        $stmt->execute([$title, $slug, $desc, $price, $features_json, $image_url, $course_id]);
+                        $success = "Curso atualizado com sucesso.";
+                    }
                 }
                 catch (PDOException $e) {
-                    $error = "Erro ao criar curso. Verifique se o nome já existe.";
+                    $error = "Erro ao processar curso. Verifique se o nome já existe.";
                 }
             }
         }
     }
 }
 
-// Handle Course Deletion
+// Handle Course Deactivation (Inativar)
 if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     $id_to_delete = (int)$_GET['delete'];
-    // In a real app we might soft-delete. Here we just hard delete or set inactive.
     $stmt = $pdo->prepare("UPDATE courses SET status = 'inactive' WHERE id = ?");
     $stmt->execute([$id_to_delete]);
     $success = "Curso inativado com sucesso.";
+}
+
+// Handle Course Hard Deletion (Excluir)
+if (isset($_GET['hard_delete']) && is_numeric($_GET['hard_delete'])) {
+    $id_to_delete = (int)$_GET['hard_delete'];
+    try {
+        $stmt = $pdo->prepare("DELETE FROM courses WHERE id = ?");
+        $stmt->execute([$id_to_delete]);
+        $success = "Curso excluído permanentemente com sucesso.";
+    }
+    catch (PDOException $e) {
+        // Código 23000 indica violação de chave estrangeira (já existem compras atreladas)
+        if ($e->getCode() == 23000) {
+            $error = "Não é possível excluir o curso pois existem matrículas vinculadas a ele. Utilize a opção [ INATIVAR ].";
+        }
+        else {
+            $error = "Erro ao excluir curso: " . $e->getMessage();
+        }
+    }
+}
+
+// Fetch Course for Editing
+$edit_course = null;
+if (isset($_GET['edit']) && is_numeric($_GET['edit'])) {
+    $stmt = $pdo->prepare("SELECT * FROM courses WHERE id = ?");
+    $stmt->execute([(int)$_GET['edit']]);
+    $edit_course = $stmt->fetch();
 }
 
 // Fetch Courses
@@ -108,46 +143,73 @@ endif; ?>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     
-    <!-- Novo Curso Form -->
+    <!-- Formulário De Curso (Criação/Edição) -->
     <div class="lg:col-span-1">
-        <div class="bg-[#0a0a0c] border border-white/10 p-6 rounded-2xl sticky top-24">
-            <h3 class="font-bold mb-6 flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-[#00ffcc]"></span> Adicionar Curso
+        <div class="bg-[#0a0a0c] border border-white/10 p-6 rounded-2xl sticky top-24 shadow-2xl">
+            <h3 class="font-bold mb-6 flex items-center justify-between gap-2">
+                <span class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-[#00ffcc] <?php echo $edit_course ? 'animate-pulse' : ''; ?>"></span> 
+                    <?php echo $edit_course ? 'Editar Curso' : 'Adicionar Curso'; ?>
+                </span>
+                <?php if ($edit_course): ?>
+                    <a href="cursos.php" class="text-[10px] text-gray-500 hover:text-white font-mono uppercase tracking-widest transition-colors">[ Cancelar ]</a>
+                <?php
+endif; ?>
             </h3>
             
-            <form method="POST" action="" enctype="multipart/form-data">
+            <form method="POST" action="cursos.php" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
-                <input type="hidden" name="action" value="create">
+                <input type="hidden" name="action" value="<?php echo $edit_course ? 'update' : 'create'; ?>">
+                <?php if ($edit_course): ?>
+                    <input type="hidden" name="course_id" value="<?php echo $edit_course['id']; ?>">
+                    <input type="hidden" name="existing_image" value="<?php echo $edit_course['image_url']; ?>">
+                <?php
+endif; ?>
                 
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-xs font-mono text-gray-400 mb-2 uppercase">Imagem (Capa)</label>
+                        <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-widest">Imagem (Capa)</label>
+                        <?php if ($edit_course && $edit_course['image_url']): ?>
+                            <div class="mb-3 relative group overflow-hidden rounded-lg">
+                                <img src="<?php echo $edit_course['image_url']; ?>" class="w-full h-32 object-cover border border-white/10">
+                                <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-[10px] text-gray-400 font-mono text-center px-4">ENVIAR NOVA PARA SUBSTITUIR</div>
+                            </div>
+                        <?php
+endif; ?>
                         <input type="file" name="image" accept="image/jpeg, image/png, image/webp" class="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#00ffcc] text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-[#00ffcc] file:text-black hover:file:bg-white cursor-pointer">
                     </div>
                     
                     <div>
-                        <label class="block text-xs font-mono text-gray-400 mb-2 uppercase">Título</label>
-                        <input type="text" name="title" required class="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#00ffcc] text-sm">
+                        <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-widest">Título</label>
+                        <input type="text" name="title" required value="<?php echo $edit_course ? sanitize_output($edit_course['title']) : ''; ?>" class="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#00ffcc] text-sm">
                     </div>
                     
                     <div>
-                        <label class="block text-xs font-mono text-gray-400 mb-2 uppercase">Preço (Ex: 197.50)</label>
-                        <input type="number" step="0.01" name="price" required class="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#00ffcc] text-sm">
+                        <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-widest">Preço (Ex: 197.50)</label>
+                        <input type="number" step="0.01" name="price" required value="<?php echo $edit_course ? $edit_course['price'] : ''; ?>" class="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#00ffcc] text-sm">
                     </div>
 
                     <div>
-                        <label class="block text-xs font-mono text-gray-400 mb-2 uppercase">Descrição Curta</label>
-                        <textarea name="description" rows="3" required class="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#00ffcc] text-sm"></textarea>
+                        <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-widest">Descrição Curta</label>
+                        <textarea name="description" rows="3" required class="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#00ffcc] text-sm"><?php echo $edit_course ? sanitize_output($edit_course['description']) : ''; ?></textarea>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-mono text-gray-400 mb-2 uppercase">Tópicos (1 por linha)</label>
-                        <textarea name="features" rows="4" placeholder="Certificado Reconhecido&#10;Mentoria VIP&#10;Acesso Vitalício" class="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#00ffcc] text-sm placeholder-gray-600 font-mono"></textarea>
+                        <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-widest">Tópicos (1 por linha)</label>
+                        <?php
+$features_text = "";
+if ($edit_course) {
+    $feat_arr = json_decode($edit_course['features_json'], true);
+    if (is_array($feat_arr))
+        $features_text = implode("\n", $feat_arr);
+}
+?>
+                        <textarea name="features" rows="4" placeholder="Certificado Reconhecido&#10;Mentoria VIP&#10;Acesso Vitalício" class="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#00ffcc] text-sm placeholder-gray-600 font-mono"><?php echo $features_text; ?></textarea>
                     </div>
                 </div>
 
-                <button type="submit" class="w-full mt-6 py-3 bg-[#00ffcc] text-black font-bold rounded-lg hover:bg-white transition-colors text-sm">
-                    Adicionar Curso
+                <button type="submit" class="w-full mt-6 py-4 bg-[#00ffcc] text-black font-bold rounded-lg hover:bg-white transition-all transform hover:-translate-y-1 shadow-lg text-sm">
+                    <?php echo $edit_course ? 'Salvar Alterações' : 'Adicionar Curso'; ?>
                 </button>
             </form>
         </div>
@@ -196,11 +258,17 @@ else: ?>
                                     <?php
         endif; ?>
                                 </td>
-                                <td class="px-6 py-4">
-                                    <?php if ($c['status'] == 'active'): ?>
-                                    <a href="cursos.php?delete=<?php echo $c['id']; ?>" class="text-red-400 hover:text-white transition-colors text-xs font-mono" onclick="return confirm('Deseja realmente inativar este curso? Ele sumirá da página inicial.');">[ INATIVAR ]</a>
-                                    <?php
+                                <td class="px-6 py-4 flex flex-col gap-2">
+                                    <div class="flex gap-2">
+                                        <a href="cursos.php?edit=<?php echo $c['id']; ?>" class="text-blue-400 hover:text-white transition-colors text-[10px] font-mono uppercase tracking-widest">[ EDITAR ]</a>
+                                        
+                                        <?php if ($c['status'] == 'active'): ?>
+                                            <a href="cursos.php?delete=<?php echo $c['id']; ?>" class="text-yellow-500 hover:text-white transition-colors text-[10px] font-mono uppercase tracking-widest" onclick="return confirm('Deseja inativar este curso? Ele será ocultado da loja inicial.');">[ INATIVAR ]</a>
+                                        <?php
         endif; ?>
+                                    </div>
+                                    
+                                    <a href="cursos.php?hard_delete=<?php echo $c['id']; ?>" class="text-red-500 hover:text-white transition-colors text-[10px] font-mono uppercase tracking-widest" onclick="return confirm('ATENÇÃO: Deseja EXCLUIR permanentemente este curso? Isso não pode ser desfeito.');">[ EXCLUIR ]</a>
                                 </td>
                             </tr>
                         <?php

@@ -1,15 +1,28 @@
 <?php
 // checkout.php
-require_once __DIR__ . '/includes/header.php';
-require_once __DIR__ . '/includes/asaas.php';
+require_once __DIR__ . '/includes/security.php';
+require_once __DIR__ . '/includes/db.php';
 
 $curso_id = filter_input(INPUT_GET, 'curso', FILTER_VALIDATE_INT);
+
+// Require Login before generating any HTML output
+if (!isset($_SESSION['user_id'])) {
+    header('Location: /login.php?redirect=' . urlencode('/checkout.php?curso=' . $curso_id));
+    exit;
+}
+
+require_once __DIR__ . '/includes/asaas.php';
+
 $error = '';
 $success_url = '';
 
 if (!$curso_id) {
     die("<div class='text-center py-32 text-white font-mono'>[ ERRO FATAL: NENHUM CURSO SELECIONADO ]</div>");
 }
+
+$user_id = $_SESSION['user_id'];
+$user_name = $_SESSION['user_name'] ?? '';
+$user_email = $_SESSION['user_email'] ?? '';
 
 // Fetch Course
 $stmt = $pdo->prepare("SELECT * FROM courses WHERE id = ? AND status = 'active'");
@@ -53,20 +66,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $invoiceUrl = $chargeRes['invoiceUrl'];
                 $asaas_charge_id = $chargeRes['id'];
 
-                $stmt = $pdo->prepare("INSERT INTO orders (course_id, customer_name, customer_email, customer_cpf, asaas_id, status, payment_url) VALUES (?, ?, ?, ?, ?, 'PENDING', ?)");
-                $stmt->execute([$curso_id, $name, $email, $cpf, $asaas_charge_id, $invoiceUrl]);
+                $stmt = $pdo->prepare("INSERT INTO orders (course_id, user_id, customer_name, customer_email, customer_cpf, asaas_id, status, payment_url) VALUES (?, ?, ?, ?, ?, ?, 'PENDING', ?)");
+                $stmt->execute([$curso_id, $user_id, $name, $email, $cpf, $asaas_charge_id, $invoiceUrl]);
 
                 // Redirect user to Asaas payment page, or go to our custom success page
-                // For a seamless cinematic flow, we redirect to Asaas URL, and Asaas will be configured
-                // to redirect back to nosso sucesso.php apos o pagamento.
-                // Or we show the URL right here. We will redirect to our sucesso page to handle the whatsapp routing
-                header("Location: sucesso.php?order=" . $pdo->lastInsertId() . "&pay_url=" . urlencode($invoiceUrl));
+                header("Location: /sucesso.php?order=" . $pdo->lastInsertId() . "&pay_url=" . urlencode($invoiceUrl));
                 exit;
             }
         }
     }
 }
 ?>
+
+<?php require_once __DIR__ . '/includes/header.php'; ?>
 
 <section class="min-h-[90dvh] pt-32 pb-20 flex items-center justify-center px-6 relative z-10">
     <div class="max-w-4xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 bg-deep-surface/50 backdrop-blur-xl border border-deep-border/50 rounded-3xl p-8 md:p-12 shadow-2xl gsap-reveal">
@@ -110,18 +122,18 @@ endif; ?>
                 
                 <div>
                     <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-wide">Nome Completo</label>
-                    <input type="text" name="name" required class="w-full bg-deep-surface border border-deep-border/50 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-accent transition-colors">
+                    <input type="text" name="name" required class="w-full bg-deep-surface border border-deep-border/50 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-accent transition-colors" value="<?php echo sanitize_output($user_name); ?>" readonly>
                 </div>
                 
                 <div>
                     <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-wide">E-mail</label>
-                    <input type="email" name="email" required class="w-full bg-deep-surface border border-deep-border/50 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-accent transition-colors">
+                    <input type="email" name="email" required class="w-full bg-deep-surface border border-deep-border/50 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-accent transition-colors text-gray-400" value="<?php echo sanitize_output($user_email); ?>" readonly>
                 </div>
                 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-wide">CPF</label>
-                        <input type="text" name="cpf" required class="w-full bg-deep-surface border border-deep-border/50 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-accent transition-colors">
+                        <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-wide">CPF (Opcional)</label>
+                        <input type="text" name="cpf" class="w-full bg-deep-surface border border-deep-border/50 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-accent transition-colors" placeholder="Somente números (opcional)">
                     </div>
                     <div>
                         <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-wide">WhatsApp</label>

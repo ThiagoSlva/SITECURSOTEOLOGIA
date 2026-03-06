@@ -19,17 +19,18 @@ function asaas_request($endpoint, $data = [], $method = 'POST')
     // Fallback/Sandbox key can go here if needed during dev
     $apiKey = $settings['asaas_api_key'] ?? '';
 
-    if (empty($apiKey)) {
-        return ['error' => true, 'message' => 'Chave API do Asaas não configurada.'];
-    }
+    // Auto-detect environment (Sandbox vs Production)
+    $isProduction = (strpos($apiKey, '$aact_prod_') === 0);
+    $baseUrl = $isProduction ? 'https://api.asaas.com/v3' : 'https://sandbox.asaas.com/api/v3';
 
-    $url = 'https://sandbox.asaas.com/api/v3' . $endpoint; // MUDAR PARA PRODUCAO DEPOIS 'https://api.asaas.com/v3'
+    $url = $baseUrl . $endpoint;
 
     $ch = curl_init();
 
     $headers = [
         'Content-Type: application/json',
-        'access_token: ' . $apiKey
+        'access_token: ' . $apiKey,
+        'User-Agent: PlataformaCursos/1.0'
     ];
 
     $options = [
@@ -78,9 +79,12 @@ function asaas_create_customer($name, $cpfBase, $email, $phone)
     $payload = [
         'name' => $name,
         'email' => $email,
-        'cpfCnpj' => $cpfBase,
         'mobilePhone' => $phone
     ];
+
+    if (!empty($cpfBase)) {
+        $payload['cpfCnpj'] = preg_replace('/[^0-9]/', '', $cpfBase);
+    }
 
     $response = asaas_request('/customers', $payload, 'POST');
     return $response;
