@@ -16,7 +16,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="max-w-4xl pt-32">
             <img src="assets/images/brasao.jpeg" alt="Brasão CGADRB" class="w-24 md:w-32 h-auto mb-6 rounded-lg border border-white/5 shadow-2xl gsap-reveal">
             
-            <p class="font-mono text-neon-accent text-sm tracking-[0.2em] mb-4 uppercase gsap-reveal">Sistema de Formação Acadêmica v1.0</p>
+            <p class="font-mono text-neon-accent text-sm tracking-[0.2em] mb-4 uppercase gsap-reveal">Instituto CAT</p>
             
             <h1 class="text-[clamp(2.5rem,7vw,6rem)] leading-[0.9] tracking-tighter text-white font-sans font-bold gsap-reveal">
                 TEOLOGIA DE<br>

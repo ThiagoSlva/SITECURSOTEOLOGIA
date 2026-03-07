@@ -20,7 +20,7 @@ $site_settings = $stmt_settings->fetch();
                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-accent opacity-75"></span>
                       <span class="relative inline-flex rounded-full h-3 w-3 bg-neon-accent"></span>
                     </span>
-                    <span class="text-xs font-mono text-gray-500 uppercase tracking-widest">SISTEMA ONLINE V1.0</span>
+                    <a href="https://clouddix.com.br" target="_blank" rel="noopener noreferrer" class="text-xs font-mono text-gray-500 uppercase tracking-widest hover:text-neon-accent transition-colors">Sistema desenvolvido por clouddix.com.br</a>
                 </div>
             </div>
             
