@@ -22,9 +22,9 @@ function render_course_card($course)
 ?>
     <div class="rounded-3xl border border-deep-border/50 bg-black/40 backdrop-blur-md p-8 hover:border-neon-accent/50 hover:bg-black transition-all duration-500 group flex flex-col h-full gsap-reveal">
         <?php if (!empty($course['image_url'])): ?>
-            <div class="h-48 -mx-8 -mt-8 mb-6 overflow-hidden rounded-t-3xl border-b border-white/10 relative">
+            <div class="h-48 -mx-8 -mt-8 mb-6 overflow-hidden rounded-t-3xl border-b border-white/10 relative bg-black">
                 <div class="absolute inset-0 bg-black/20 z-10 group-hover:bg-transparent transition-colors"></div>
-                <img src="<?php echo sanitize_output($course['image_url']); ?>" alt="Capa" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
+                <img src="<?php echo sanitize_output($course['image_url']); ?>" alt="Capa" class="w-full h-full object-contain transform group-hover:scale-105 transition-transform duration-700">
             </div>
         <?php
     else: ?>

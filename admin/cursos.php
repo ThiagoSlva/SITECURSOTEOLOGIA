@@ -223,7 +223,7 @@ endif; ?>
                         <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-widest">Imagem (Capa)</label>
                         <?php if ($edit_course && $edit_course['image_url']): ?>
                             <div class="mb-3 relative group overflow-hidden rounded-lg">
-                                <img src="<?php echo $edit_course['image_url']; ?>" class="w-full h-32 object-cover border border-white/10">
+                                <img src="<?php echo $edit_course['image_url']; ?>" class="w-full h-32 object-contain border border-white/10 bg-black">
                                 <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-[10px] text-gray-400 font-mono text-center px-4">ENVIAR NOVA PARA SUBSTITUIR</div>
                             </div>
                         <?php
@@ -302,7 +302,7 @@ else: ?>
                             <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
                                 <td class="px-6 py-4 flex items-center gap-4">
                                     <?php if (!empty($c['image_url'])): ?>
-                                        <img src="<?php echo sanitize_output($c['image_url']); ?>" alt="Capa" class="w-12 h-12 object-cover rounded-lg border border-white/10">
+                                        <img src="<?php echo sanitize_output($c['image_url']); ?>" alt="Capa" class="w-12 h-12 object-contain rounded-lg border border-white/10 bg-black">
                                     <?php
         else: ?>
                                         <div class="w-12 h-12 bg-white/5 rounded-lg border border-white/10 flex items-center justify-center text-gray-500 font-mono text-[10px]">SEM IMAGEM</div>

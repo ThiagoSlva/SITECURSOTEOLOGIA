@@ -77,9 +77,9 @@ endif; ?>
             <!-- Main Content Area -->
             <div class="lg:col-span-8">
                 <?php if ($hasImage): ?>
-                    <div class="aspect-video w-full rounded-3xl overflow-hidden border border-white/10 shadow-2xl mb-16 relative group gsap-reveal">
+                    <div class="aspect-video w-full rounded-3xl overflow-hidden border border-white/10 shadow-2xl mb-16 relative group gsap-reveal bg-black">
                         <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors z-10"></div>
-                        <img src="<?php echo sanitize_output($course['image_url']); ?>" alt="<?php echo sanitize_output($course['title']); ?>" class="w-full h-full object-cover">
+                        <img src="<?php echo sanitize_output($course['image_url']); ?>" alt="<?php echo sanitize_output($course['title']); ?>" class="w-full h-full object-contain">
                     </div>
                 <?php
 endif; ?>
