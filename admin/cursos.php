@@ -32,6 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $error = "Preço inválido.";
         }
         else {
+            $category_id = filter_input(INPUT_POST, 'category_id', FILTER_VALIDATE_INT);
+
             // Handle Image Upload
             $image_url = $_POST['existing_image'] ?? null;
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
@@ -62,13 +64,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             if (empty($error)) {
                 try {
                     if ($action === 'create') {
-                        $stmt = $pdo->prepare("INSERT INTO courses (title, slug, description, price, features_json, status, image_url) VALUES (?, ?, ?, ?, ?, 'active', ?)");
-                        $stmt->execute([$title, $slug, $desc, $price, $features_json, $image_url]);
+                        $stmt = $pdo->prepare("INSERT INTO courses (title, slug, description, price, features_json, status, image_url, category_id) VALUES (?, ?, ?, ?, ?, 'active', ?, ?)");
+                        $stmt->execute([$title, $slug, $desc, $price, $features_json, $image_url, $category_id ?: null]);
                         $success = "Curso criado com sucesso.";
                     }
                     elseif ($action === 'update' && $course_id) {
-                        $stmt = $pdo->prepare("UPDATE courses SET title = ?, slug = ?, description = ?, price = ?, features_json = ?, image_url = ? WHERE id = ?");
-                        $stmt->execute([$title, $slug, $desc, $price, $features_json, $image_url, $course_id]);
+                        $stmt = $pdo->prepare("UPDATE courses SET title = ?, slug = ?, description = ?, price = ?, features_json = ?, image_url = ?, category_id = ? WHERE id = ?");
+                        $stmt->execute([$title, $slug, $desc, $price, $features_json, $image_url, $category_id ?: null, $course_id]);
                         $success = "Curso atualizado com sucesso.";
                     }
                 }
@@ -77,6 +79,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 }
             }
         }
+    }
+}
+
+// Handle Category Creation
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cat_action']) && $_POST['cat_action'] === 'create_cat') {
+    if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        $error = "Token CSRF inválido.";
+    }
+    else {
+        $cat_name = filter_input(INPUT_POST, 'cat_name', FILTER_SANITIZE_STRING);
+        $cat_slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $cat_name)));
+
+        if ($cat_name) {
+            try {
+                $stmt = $pdo->prepare("INSERT INTO categories (name, slug) VALUES (?, ?)");
+                $stmt->execute([$cat_name, $cat_slug]);
+                $success = "Categoria criada com sucesso.";
+            }
+            catch (PDOException $e) {
+                $error = "Erro ao criar categoria. Talvez o nome já exista.";
+            }
+        }
+    }
+}
+
+// Handle Category Deletion
+if (isset($_GET['delete_cat']) && is_numeric($_GET['delete_cat'])) {
+    $cat_id = (int)$_GET['delete_cat'];
+    try {
+        $stmt = $pdo->prepare("DELETE FROM categories WHERE id = ?");
+        $stmt->execute([$cat_id]);
+        $success = "Categoria excluída com sucesso.";
+    }
+    catch (PDOException $e) {
+        $error = "Não é possível excluir a categoria pois existem cursos vinculados a ela.";
     }
 }
 
@@ -115,15 +152,30 @@ if (isset($_GET['edit']) && is_numeric($_GET['edit'])) {
     $edit_course = $stmt->fetch();
 }
 
-// Fetch Courses
-$stmt = $pdo->query("SELECT * FROM courses ORDER BY id DESC");
+// Fetch Categories
+$stmt = $pdo->query("SELECT * FROM categories ORDER BY name ASC");
+$categories = $stmt->fetchAll();
+
+// Fetch Courses with Category Name
+$stmt = $pdo->query("
+    SELECT c.*, cat.name as category_name 
+    FROM courses c 
+    LEFT JOIN categories cat ON c.category_id = cat.id 
+    ORDER BY c.id DESC
+");
 $courses = $stmt->fetchAll();
 ?>
 
-<div class="mb-8 flex justify-between items-end">
+<div class="mb-8 flex justify-between items-end gap-4">
     <div>
         <h2 class="text-3xl font-bold tracking-tighter">Cursos</h2>
         <p class="text-gray-400 font-mono text-sm mt-1">Gerencie os cursos oferecidos na plataforma.</p>
+    </div>
+    <div class="flex gap-2">
+        <a href="#categorias" class="px-4 py-2 border border-blue-500 text-blue-400 text-[10px] font-bold rounded-lg hover:bg-blue-600 hover:text-white transition-all uppercase tracking-widest flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+            Categorias
+        </a>
     </div>
 </div>
 
@@ -183,6 +235,19 @@ endif; ?>
                         <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-widest">Título</label>
                         <input type="text" name="title" required value="<?php echo $edit_course ? sanitize_output($edit_course['title']) : ''; ?>" class="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#00ffcc] text-sm">
                     </div>
+
+                    <div>
+                        <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-widest">Categoria</label>
+                        <select name="category_id" class="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#00ffcc] text-sm cursor-pointer">
+                            <option value="">Sem Categoria</option>
+                            <?php foreach ($categories as $cat): ?>
+                                <option value="<?php echo $cat['id']; ?>" <?php echo($edit_course && $edit_course['category_id'] == $cat['id']) ? 'selected' : ''; ?>>
+                                    <?php echo sanitize_output($cat['name']); ?>
+                                </option>
+                            <?php
+endforeach; ?>
+                        </select>
+                    </div>
                     
                     <div>
                         <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-widest">Preço (Ex: 197.50)</label>
@@ -222,6 +287,7 @@ if ($edit_course) {
                 <thead class="text-xs uppercase bg-white/5 font-mono">
                     <tr>
                         <th class="px-6 py-4">Curso</th>
+                        <th class="px-6 py-4">Categoria</th>
                         <th class="px-6 py-4">Preço</th>
                         <th class="px-6 py-4">Status</th>
                         <th class="px-6 py-4">Ações</th>
@@ -247,6 +313,11 @@ else: ?>
                                         <p class="text-white font-medium mb-1"><?php echo sanitize_output($c['title']); ?></p>
                                         <p class="text-xs line-clamp-1 max-w-sm"><?php echo sanitize_output($c['description']); ?></p>
                                     </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="text-xs font-mono <?php echo $c['category_name'] ? 'text-gray-300' : 'text-gray-600 italic'; ?>">
+                                        <?php echo $c['category_name'] ? sanitize_output($c['category_name']) : 'Nenhum'; ?>
+                                    </span>
                                 </td>
                                 <td class="px-6 py-4 text-[#00ffcc] font-mono">R$ <?php echo number_format($c['price'], 2, ',', '.'); ?></td>
                                 <td class="px-6 py-4">
@@ -277,6 +348,62 @@ else: ?>
 endif; ?>
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <!-- Gestão de Categorias -->
+    <div id="categorias" class="lg:col-span-3 mt-12 border-t border-white/10 pt-12">
+        <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+            Gestão de Categorias
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Adicionar Categoria -->
+            <div class="bg-[#0a0a0c] border border-white/10 p-6 rounded-2xl">
+                <form method="POST" action="cursos.php">
+                    <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
+                    <input type="hidden" name="cat_action" value="create_cat">
+                    <div class="flex gap-4">
+                        <div class="flex-grow">
+                            <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-widest">Novo Nome de Categoria</label>
+                            <input type="text" name="cat_name" required placeholder="Ex: Cursos Rápidos" class="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500 text-sm">
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit" class="h-[38px] px-6 bg-blue-600 text-white font-bold rounded-lg hover:bg-white hover:text-black transition-all text-xs uppercase tracking-widest">Criar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Listagem de Categorias -->
+            <div class="bg-[#0a0a0c] border border-white/10 rounded-2xl overflow-hidden text-sm">
+                <table class="w-full text-left">
+                    <thead class="bg-white/5 font-mono text-xs uppercase">
+                        <tr>
+                            <th class="px-6 py-3">Categoria</th>
+                            <th class="px-6 py-3 text-right">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (empty($categories)): ?>
+                            <tr><td colspan="2" class="px-6 py-4 text-gray-500">Nenhuma categoria criada.</td></tr>
+                        <?php
+else: ?>
+                            <?php foreach ($categories as $cat): ?>
+                                <tr class="border-b border-white/5">
+                                    <td class="px-6 py-3 font-medium"><?php echo sanitize_output($cat['name']); ?></td>
+                                    <td class="px-6 py-3 text-right">
+                                        <a href="cursos.php?delete_cat=<?php echo $cat['id']; ?>" class="text-red-500 hover:text-white transition-colors font-mono text-[10px]" onclick="return confirm('Deseja excluir esta categoria?');">[ EXCLUIR ]</a>
+                                    </td>
+                                </tr>
+                            <?php
+    endforeach; ?>
+                        <?php
+endif; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
