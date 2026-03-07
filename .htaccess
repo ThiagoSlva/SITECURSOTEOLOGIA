@@ -74,5 +74,5 @@ Header always set Referrer-Policy "strict-origin-when-cross-origin"
 # Página de erro customizada
 ErrorDocument 404 /404.php
 
-# Sitemap (descomentar quando no ar)
-# RewriteRule ^sitemap\.xml$ sitemap.php [L]
+# Sitemap
+RewriteRule ^sitemap\.xml$ sitemap.php [L]
