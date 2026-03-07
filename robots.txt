@@ -1,0 +1,38 @@
+User-agent: *
+Allow: /
+
+# Priorizar páginas importantes
+Allow: /cursos.php
+Allow: /curso-single.php
+Allow: /blog.php
+Allow: /blog-single.php
+Allow: /assets/
+Allow: /sitemap.xml
+
+# Bloquear páginas de admin
+Disallow: /admin/
+Disallow: /includes/
+Disallow: /configuracoes.php
+Disallow: /checkout.php
+Disallow: /sucesso.php
+
+# Bloquear arquivos temporários
+Disallow: /temp/
+Disallow: /cache/
+Disallow: /*.php$
+Disallow: /*?*
+
+# Sitemap
+Sitemap: https://cgadrb.com.br/sitemap.php
+
+# Delay para não sobrecarregar servidor
+Crawl-delay: 1
+
+# Especificar user agents específicos
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 2

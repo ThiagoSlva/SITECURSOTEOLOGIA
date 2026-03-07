@@ -68,8 +68,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $whatsapp_url = "https://api.whatsapp.com/send?phone=" . $admin_phone . "&text=" . urlencode($message);
 
             // 3. Save Order (Pending) for tracking
-            $stmt = $pdo->prepare("INSERT INTO orders (course_id, user_id, customer_name, customer_email, customer_cpf, status, payment_url) VALUES (?, ?, ?, ?, ?, 'PENDING_MANUAL', ?)");
-            $stmt->execute([$curso_id, $user_id, $name, $email, $cpf, $whatsapp_url]);
+            $stmt = $pdo->prepare("INSERT INTO orders (course_id, user_id, customer_name, customer_email, customer_phone, customer_cpf, status, payment_url) VALUES (?, ?, ?, ?, ?, ?, 'PENDING_MANUAL', ?)");
+            $stmt->execute([$curso_id, $user_id, $name, $email, $phone, $cpf, $whatsapp_url]);
 
             // 4. Redirect directly to WhatsApp
             header("Location: " . $whatsapp_url);
