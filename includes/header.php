@@ -2,101 +2,50 @@
 // includes/header.php
 require_once __DIR__ . '/security.php';
 require_once __DIR__ . '/db.php';
-require_once __DIR__ . '/seo.php';
-
-// Detectar página atual e gerar SEO
-$current_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$page_data = [];
-
-// SEO por página
-switch ($current_path) {
-    case '/':
-    case '':
-        $page_data = [
-            'title' => 'CGADRB - Cursos Teológicos Online com Certificado',
-            'description' => 'Cursos teológicos online com certificação reconhecida pelo MEC. Formação em teologia sistemática, pastoral e ministerial. Matricule-se agora!',
-            'keywords' => 'cursos teológicos online, teologia a distancia, curso de teologia, formação teológica, seminário teológico, certificado teológico, CGADRB',
-            'type' => 'website',
-            'image' => 'https://' . $_SERVER['HTTP_HOST'] . '/assets/images/brasao.jpeg'
-        ];
-        break;
-        
-    case '/cursos.php':
-        $page_data = [
-            'title' => 'Catálogo de Cursos Teológicos - CGADRB',
-            'description' => 'Conheça todos os cursos teológicos do CGADRB. Cursos online em teologia sistemática, pastoral, homilética e mais. Matrículas abertas!',
-            'keywords' => 'cursos teológicos, catálogo de cursos, teologia online, cursos de teologia, formação pastoral, CGADRB',
-            'type' => 'website'
-        ];
-        break;
-        
-    case (strpos($current_path, '/curso-single.php') !== false):
-        $slug = $_GET['slug'] ?? '';
-        if ($slug) {
-            $stmt = $pdo->prepare("SELECT * FROM courses WHERE slug = ? AND status = 'active'");
-            $stmt->execute([$slug]);
-            $course = $stmt->fetch();
-            
-            if ($course) {
-                $page_data = [
-                    'title' => $course['title'] . ' - Curso Teológico Online - CGADRB',
-                    'description' => strip_tags(substr($course['description'], 0, 160)) . '...',
-                    'keywords' => $course['title'] . ', curso teológico, ' . $course['title'] . ' online, CGADRB',
-                    'type' => 'course',
-                    'image' => $course['image_url'] ?? 'https://' . $_SERVER['HTTP_HOST'] . '/assets/images/logotipo.jpeg'
-                ];
-            }
-        }
-        break;
-        
-    case '/blog.php':
-        $page_data = [
-            'title' => 'Blog Teológico - Artigos e Reflexões - CGADRB',
-            'description' => 'Leia artigos teológicos profundos sobre teologia sistemática, pastoral, homilética e vida cristã. Conteúdo exclusivo CGADRB.',
-            'keywords' => 'blog teológico, artigos teológicos, teologia sistemática, pastoral, homilética, CGADRB',
-            'type' => 'website'
-        ];
-        break;
-        
-    default:
-        $page_data = [
-            'title' => 'CGADRB - Instituto de Formação Teológica',
-            'description' => 'CGADRB - Instituto de formação teológica com cursos online e certificação reconhecida. Matricule-se em nossos cursos teológicos.',
-            'keywords' => 'CGADRB, instituto teológico, formação teológica, cursos online, certificado teológico',
-            'type' => 'website'
-        ];
-        break;
-}
-
-// Gerar meta tags
-$seo_meta = generate_seo_meta($page_data);
-echo $seo_meta;
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR" class="scroll-smooth">
 <head>
-    <!-- Tailwind CSS (CDN for rapid prototyping as requested) -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGADRB - Cursos de Extensão Universitária</title>
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     
+    <!-- Tailwind CSS (CDN for rapid prototyping as requested) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        'deep-space': '#000000',
+                        'deep-surface': '#0a0a0c',
+                        'deep-border': 'rgba(255, 255, 255, 0.1)',
+                        'neon-accent': '#00ffcc',
+                        'neon-hover': '#00e6b8',
+                    },
+                    backgroundImage: {
+                        'hero-gradient': 'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 70%, rgba(0,0,0,1) 100%)',
+                    }
+                }
+            }
+        }
+    </script>
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/assets/css/styles.css">
     
     <!-- Lenis Smooth Scroll -->
     <link rel="stylesheet" href="https://unpkg.com/lenis@1.1.9/dist/lenis.css">
-    
-    <!-- Structured Data Avançado -->
-    <?php
-    // Adicionar schema específico por página
-    if (isset($course) && $course) {
-        echo '<script type="application/ld+json">' . generate_course_schema($course) . '</script>';
-    }
-    // Adicionar breadcrumbs se aplicável
-    if (isset($page_data['breadcrumbs'])) {
-        echo '<script type="application/ld+json">' . generate_breadcrumb_schema($page_data['breadcrumbs']) . '</script>';
-    }
-    ?>
 </head>
 <body class="bg-deep-space text-white antialiased font-sans selection:bg-neon-accent selection:text-black min-h-screen flex flex-col relative overflow-x-hidden">
 
