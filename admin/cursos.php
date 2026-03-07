@@ -283,7 +283,8 @@ if ($edit_course) {
     <!-- Lista de Cursos -->
     <div class="lg:col-span-2">
         <div class="bg-[#0a0a0c] border border-white/10 rounded-2xl overflow-hidden">
-            <table class="w-full text-left text-sm text-gray-400">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-gray-400">
                 <thead class="text-xs uppercase bg-white/5 font-mono">
                     <tr>
                         <th class="px-6 py-4">Curso</th>
@@ -347,7 +348,8 @@ else: ?>
                     <?php
 endif; ?>
                 </tbody>
-            </table>
+                </table>
+            </div>
         </div>
     </div>
 
