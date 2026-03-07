@@ -44,36 +44,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $cpf = filter_input(INPUT_POST, 'cpf', FILTER_SANITIZE_STRING);
         $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING);
 
-        // 1. Create/Get Asaas Customer
-        $customerRes = asaas_create_customer($name, $cpf, $email, $phone);
+        // 1. Fetch Admin WhatsApp Number
+        $stmt = $pdo->query("SELECT whatsapp_number FROM settings WHERE id = 1");
+        $settings = $stmt->fetch();
+        $admin_phone = preg_replace('/[^0-9]/', '', $settings['whatsapp_number'] ?? '5511999999999');
 
-        if (isset($customerRes['error']) && $customerRes['error']) {
-            $error = "Erro no Asaas (Cliente): " . sanitize_output($customerRes['message']);
+        // 2. Prepare WhatsApp Message
+        $message = "Olá! Gostaria de comprar o curso: *" . $course['title'] . "*.\n\n";
+        $message .= "*Dados do Cliente:*\n";
+        $message .= "Nome: " . $name . "\n";
+        $message .= "E-mail: " . $email . "\n";
+        $message .= "WhatsApp: " . $phone . "\n\n";
+        if (!empty($cpf)) {
+            $message .= "CPF: " . $cpf . "\n";
         }
-        else {
-            $asaas_customer_id = $customerRes['id'];
+        $message .= "Por favor, me envie os dados para pagamento via PIX.";
 
-            // 2. Create Charge (We'll default to PIX for this example checkout)
-            $dueDate = date('Y-m-d', strtotime('+3 days'));
-            $desc = "Matrícula CGADRB: " . $course['title'];
-            $chargeRes = asaas_create_pix_charge($asaas_customer_id, $course['price'], $desc, $dueDate);
+        $whatsapp_url = "https://api.whatsapp.com/send?phone=" . $admin_phone . "&text=" . urlencode($message);
 
-            if (isset($chargeRes['error']) && $chargeRes['error']) {
-                $error = "Erro no Asaas (Cobrança): " . sanitize_output($chargeRes['message']);
-            }
-            else {
-                // Success! Save Order to DB
-                $invoiceUrl = $chargeRes['invoiceUrl'];
-                $asaas_charge_id = $chargeRes['id'];
+        // 3. Save Order (Pending) for tracking
+        $stmt = $pdo->prepare("INSERT INTO orders (course_id, user_id, customer_name, customer_email, customer_cpf, status, payment_url) VALUES (?, ?, ?, ?, ?, 'PENDING_MANUAL', ?)");
+        $stmt->execute([$curso_id, $user_id, $name, $email, $cpf, $whatsapp_url]);
 
-                $stmt = $pdo->prepare("INSERT INTO orders (course_id, user_id, customer_name, customer_email, customer_cpf, asaas_id, status, payment_url) VALUES (?, ?, ?, ?, ?, ?, 'PENDING', ?)");
-                $stmt->execute([$curso_id, $user_id, $name, $email, $cpf, $asaas_charge_id, $invoiceUrl]);
-
-                // Redirect user to Asaas payment page, or go to our custom success page
-                header("Location: /sucesso.php?order=" . $pdo->lastInsertId() . "&pay_url=" . urlencode($invoiceUrl));
-                exit;
-            }
-        }
+        // 4. Redirect directly to WhatsApp
+        header("Location: " . $whatsapp_url);
+        exit;
     }
 }
 ?>
