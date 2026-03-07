@@ -54,6 +54,7 @@ require_login();
                 <hr class="border-white/5 my-4">
                 <a href="configuracoes.php" class="flex items-center gap-3 py-2 px-4 rounded hover:bg-white/5 transition-colors <?php echo basename($_SERVER['PHP_SELF']) == 'configuracoes.php' ? 'bg-white/10 text-[#00ffcc]' : 'text-gray-400'; ?>">⚙️ Configs</a>
                 <a href="alterar_senha.php" class="flex items-center gap-3 py-2 px-4 rounded hover:bg-white/5 transition-colors <?php echo basename($_SERVER['PHP_SELF']) == 'alterar_senha.php' ? 'bg-white/10 text-[#00ffcc]' : 'text-gray-400'; ?>">🔐 Senha</a>
+                <a href="logout.php" class="flex items-center gap-3 py-2 px-4 rounded hover:bg-red-500/10 text-red-400/80 hover:text-red-400 transition-colors mt-4">🚪 Sair</a>
             </nav>
 
             <div class="p-4 border-t border-white/10">
@@ -61,7 +62,7 @@ require_login();
                     <div class="w-8 h-8 rounded-full bg-[#00ffcc] text-black flex items-center justify-center font-bold text-xs">A</div>
                     <div class="flex-grow min-w-0">
                         <p class="text-xs font-bold truncate"><?php echo sanitize_output($_SESSION['admin_name']); ?></p>
-                        <a href="logout.php" class="text-[9px] text-gray-500 hover:text-red-400 uppercase tracking-tighter">Sair do Sistema</a>
+                        <a href="logout.php" class="text-[10px] text-gray-400 hover:text-red-400 uppercase tracking-tighter">Sair do Sistema</a>
                     </div>
                 </div>
             </div>
