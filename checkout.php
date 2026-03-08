@@ -40,10 +40,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
         $cpf = filter_input(INPUT_POST, 'cpf', FILTER_SANITIZE_STRING);
         $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING);
+        $accept_terms = filter_input(INPUT_POST, 'accept_terms', FILTER_VALIDATE_BOOLEAN);
 
         // Basic Validation
         if (empty($name) || empty($email) || empty($phone)) {
             $error = "Por favor, preencha todos os campos obrigatórios.";
+        }
+        elseif (!$accept_terms) {
+            $error = "Você precisa aceitar os Termos de Uso e Política de Privacidade para continuar.";
         }
         else {
             // 1. Fetch Admin WhatsApp Number
@@ -67,11 +71,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $whatsapp_url = "https://api.whatsapp.com/send?phone=" . $admin_phone . "&text=" . urlencode($message);
 
-            // 3. Save Order (Pending) for tracking
+            // 3. Handle User Creation / Association
+            $user_id = null;
+            $send_purchase_email = true;
+
+            if (!$is_logged_in) {
+                // Verificar se email já existe
+                $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+                $stmt->execute([$email]);
+                $existing_user = $stmt->fetch();
+
+                if ($existing_user) {
+                    // Email já existe - usar usuário existente
+                    $user_id = $existing_user['id'];
+                } else {
+                    // Email não existe - criar novo usuário com senha aleatória
+                    $generated_password = bin2hex(random_bytes(6));
+                    $password_hash = password_hash($generated_password, PASSWORD_DEFAULT);
+
+                    $stmt = $pdo->prepare("INSERT INTO users (name, email, password_hash, phone) VALUES (?, ?, ?, ?)");
+                    $stmt->execute([$name, $email, $password_hash, $phone]);
+                    $user_id = $pdo->lastInsertId();
+
+                    // Enviar email com dados de acesso (guest_welcome)
+                    require_once __DIR__ . '/includes/mailer.php';
+                    $email_result = send_system_email($pdo, $email, 'guest_welcome', [
+                        'nome' => $name,
+                        'email' => $email,
+                        'senha' => $generated_password,
+                        'curso' => $course['title']
+                    ]);
+                    file_put_contents(__DIR__ . '/../email_debug.log', date('Y-m-d H:i:s') . " - CHECKOUT guest_welcome result: " . json_encode($email_result) . "\n", FILE_APPEND);
+
+                    // Não enviar purchase_confirmation para contas novas (já recebeu guest_welcome)
+                    $send_purchase_email = false;
+                }
+            } else {
+                // Cliente logado
+                $user_id = $_SESSION['user_id'];
+            }
+
+            // 4. Save Order (Pending) for tracking
             $stmt = $pdo->prepare("INSERT INTO orders (course_id, user_id, customer_name, customer_email, customer_phone, customer_cpf, status, payment_url) VALUES (?, ?, ?, ?, ?, ?, 'PENDING_MANUAL', ?)");
             $stmt->execute([$curso_id, $user_id, $name, $email, $phone, $cpf, $whatsapp_url]);
 
-            // 4. Redirect directly to WhatsApp
+            // 5. Enviar email de confirmação de compra
+            if ($send_purchase_email) {
+                require_once __DIR__ . '/includes/mailer.php';
+                $email_result = send_system_email($pdo, $email, 'purchase_confirmation', [
+                    'nome' => $name,
+                    'curso' => $course['title']
+                ]);
+                file_put_contents(__DIR__ . '/../email_debug.log', date('Y-m-d H:i:s') . " - CHECKOUT purchase_confirmation result: " . json_encode($email_result) . "\n", FILE_APPEND);
+            }
+
+            // 6. Redirect directly to WhatsApp
             header("Location: " . $whatsapp_url);
             exit;
         }
@@ -147,6 +201,17 @@ endif; ?>
                         <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-wide">WhatsApp</label>
                         <input type="text" name="phone" required class="w-full bg-deep-surface border border-deep-border/50 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-neon-accent transition-colors" placeholder="(00) 00000-0000">
                     </div>
+                </div>
+
+                <div class="mt-4">
+                    <label class="flex items-start gap-3 cursor-pointer">
+                        <input type="checkbox" name="accept_terms" required value="1" class="mt-1 w-4 h-4 rounded border-gray-600 text-neon-accent focus:ring-neon-accent bg-deep-surface">
+                        <span class="text-xs text-gray-400">
+                            Ao finalizar, você concorda com nossos 
+                            <a href="/politica-privacidade.php" target="_blank" class="text-neon-accent hover:underline">Termos de Uso</a> e 
+                            <a href="/politica-privacidade.php" target="_blank" class="text-neon-accent hover:underline">Política de Privacidade</a>.
+                        </span>
+                    </label>
                 </div>
 
                 <button type="submit" class="w-full mt-6 py-4 bg-neon-accent text-black font-bold rounded-xl hover:bg-white transition-colors flex justify-center items-center gap-2">

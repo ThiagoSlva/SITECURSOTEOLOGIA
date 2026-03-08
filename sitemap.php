@@ -18,6 +18,8 @@ $staticPages = [
     ['loc' => '/', 'priority' => '1.0', 'changefreq' => 'weekly'],
     ['loc' => '/cursos.php', 'priority' => '0.9', 'changefreq' => 'daily'],
     ['loc' => '/blog.php', 'priority' => '0.8', 'changefreq' => 'weekly'],
+    ['loc' => '/politica-privacidade.php', 'priority' => '0.5', 'changefreq' => 'monthly'],
+    ['loc' => '/termos-de-uso.php', 'priority' => '0.5', 'changefreq' => 'monthly'],
 ];
 
 foreach ($staticPages as $page) {

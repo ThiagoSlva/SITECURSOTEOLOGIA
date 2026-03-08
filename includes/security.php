@@ -6,8 +6,22 @@ if (session_status() === PHP_SESSION_NONE) {
     ini_set('session.cookie_httponly', 1);
     ini_set('session.use_only_cookies', 1);
     ini_set('session.cookie_samesite', 'Lax'); // Protect against CSRF
-    // ini_set('session.cookie_secure', 1); // Enable in production with HTTPS
+    ini_set('session.cookie_secure', 1); // Require HTTPS (SSL)
+    ini_set('session.gc_maxlifetime', 18000); // 5 hours session lifetime
     session_start();
+    
+    // Session timeout check (5 hours)
+    if (isset($_SESSION['last_activity'])) {
+        $elapsed = time() - $_SESSION['last_activity'];
+        $session_lifetime = 18000; // 5 hours in seconds
+        
+        if ($elapsed >= $session_lifetime) {
+            session_unset();
+            session_destroy();
+            session_start();
+        }
+    }
+    $_SESSION['last_activity'] = time();
 }
 
 /**

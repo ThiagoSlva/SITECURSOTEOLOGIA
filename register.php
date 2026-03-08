@@ -3,7 +3,6 @@
 require_once __DIR__ . '/includes/security.php';
 require_once __DIR__ . '/includes/db.php';
 
-// If already logged in as a student, redirect to portal
 if (isset($_SESSION['user_id'])) {
     header('Location: /portal/index.php');
     exit;
@@ -23,9 +22,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING);
         $password = $_POST['password'] ?? '';
         $redirect_to_post = $_POST['redirect'] ?? '';
+        $accept_terms = isset($_POST['accept_terms']) && $_POST['accept_terms'] === '1';
 
         if (!$name || !$email || !$password) {
             $error = "Preencha todos os campos obrigatórios.";
+        }
+        elseif (!$accept_terms) {
+            $error = "Você precisa aceitar os Termos de Uso e Política de Privacidade para criar uma conta.";
         }
         elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $error = "E-mail inválido.";
@@ -34,30 +37,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = "A senha deve ter pelo menos 8 caracteres, contendo letras, números e símbolos especiais.";
         }
         else {
-            // Check if email exists
             $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
             $stmt->execute([$email]);
             if ($stmt->fetch()) {
                 $error = "Este e-mail já está cadastrado. Faça login.";
             }
             else {
-                // Register user
                 $password_hash = password_hash($password, PASSWORD_DEFAULT);
-                // Require the mailer helper
                 require_once __DIR__ . '/includes/mailer.php';
 
-                // Insert new user
                 $stmt = $pdo->prepare("INSERT INTO users (name, email, password_hash, phone) VALUES (?, ?, ?, ?)");
                 if ($stmt->execute([$name, $email, $password_hash, $phone])) {
                     $user_id = $pdo->lastInsertId();
 
-                    // Send Welcome Email
                     send_system_email($pdo, $email, 'welcome', [
                         'nome' => $name,
                         'email' => $email
                     ]);
 
-                    // Auto Login
                     $_SESSION['user_id'] = $user_id;
                     $_SESSION['user_name'] = $name;
                     $_SESSION['user_email'] = $email;
@@ -78,7 +75,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Now we can safely include the layout header
 require_once __DIR__ . '/includes/header.php';
 ?>
 
@@ -100,15 +96,13 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-xl mb-6 font-mono text-xs">
                     <?php echo $error; ?>
                 </div>
-            <?php
-endif; ?>
+            <?php endif; ?>
 
             <form method="POST" action="register.php" class="space-y-5">
                 <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
                 <?php if ($redirect_to): ?>
                     <input type="hidden" name="redirect" value="<?php echo sanitize_output($redirect_to); ?>">
-                <?php
-endif; ?>
+                <?php endif; ?>
 
                 <div>
                     <label class="block text-xs font-mono text-gray-500 mb-2 uppercase tracking-widest">Nome Completo</label>
@@ -128,6 +122,17 @@ endif; ?>
                 <div>
                     <label class="block text-xs font-mono text-gray-500 mb-2 uppercase tracking-widest">Senha Forte</label>
                     <input type="password" name="password" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#00ffcc] focus:bg-white/10 transition-colors text-sm" placeholder="Mínimo 8 caracteres (Letras, Números e Símbolos)">
+                </div>
+
+                <div class="pt-2">
+                    <label class="flex items-start gap-3 cursor-pointer">
+                        <input type="checkbox" name="accept_terms" required value="1" class="mt-1 w-4 h-4 rounded border-gray-600 text-[#00ffcc] focus:ring-[#00ffcc] bg-white/5">
+                        <span class="text-xs text-gray-400">
+                            Ao criar uma conta, você concorda com nossos 
+                            <a href="/termos-de-uso.php" target="_blank" class="text-[#00ffcc] hover:underline">Termos de Uso</a> e 
+                            <a href="/politica-privacidade.php" target="_blank" class="text-[#00ffcc] hover:underline">Política de Privacidade</a>.
+                        </span>
+                    </label>
                 </div>
 
                 <div class="pt-4">

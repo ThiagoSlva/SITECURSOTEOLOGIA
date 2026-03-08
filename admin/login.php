@@ -3,6 +3,11 @@
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/security.php';
 
+// Initialize login attempts
+if (!isset($_SESSION['admin_login_attempts'])) {
+    $_SESSION['admin_login_attempts'] = 0;
+}
+
 // If already logged in, redirect to index
 if (isset($_SESSION['admin_id'])) {
     header("Location: index.php");
@@ -16,28 +21,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Token de segurança inválido.";
     }
     else {
-        $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-        $password = $_POST['password'] ?? '';
+        // Check Captcha if attempts >= 3
+        if ($_SESSION['admin_login_attempts'] >= 3) {
+            $captcha_answer = filter_input(INPUT_POST, 'captcha_answer', FILTER_VALIDATE_INT);
+            $expected_answer = $_SESSION['admin_captcha_answer'] ?? null;
 
-        $stmt = $pdo->prepare("SELECT id, name, password_hash FROM admin_users WHERE email = ? LIMIT 1");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch();
-
-        // Secure password verification
-        if ($user && password_verify($password, $user['password_hash'])) {
-            // Password is correct, regenerate session ID to prevent session fixation attacks
-            session_regenerate_id(true);
-
-            $_SESSION['admin_id'] = $user['id'];
-            $_SESSION['admin_name'] = $user['name'];
-
-            header("Location: index.php");
-            exit();
+            if ($captcha_answer !== $expected_answer) {
+                $error = "Enigma incorreto. Resolva o cálculo para prosseguir.";
+            }
         }
-        else {
-            $error = "E-mail ou senha incorretos.";
+
+        if (empty($error)) {
+            $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+            $password = $_POST['password'] ?? '';
+
+            $stmt = $pdo->prepare("SELECT id, name, password_hash FROM admin_users WHERE email = ? LIMIT 1");
+            $stmt->execute([$email]);
+            $user = $stmt->fetch();
+
+            // Secure password verification
+            if ($user && password_verify($password, $user['password_hash'])) {
+                // Password is correct, regenerate session ID to prevent session fixation attacks
+                session_regenerate_id(true);
+
+                $_SESSION['admin_login_attempts'] = 0;
+                unset($_SESSION['admin_captcha_answer']);
+                $_SESSION['admin_id'] = $user['id'];
+                $_SESSION['admin_name'] = $user['name'];
+
+                header("Location: index.php");
+                exit();
+            }
+            else {
+                $_SESSION['admin_login_attempts']++;
+                $error = "E-mail ou senha incorretos.";
+            }
         }
     }
+}
+
+// Generate new Captcha if needed
+$show_captcha = ($_SESSION['admin_login_attempts'] >= 3);
+if ($show_captcha) {
+    $num1 = rand(1, 10);
+    $num2 = rand(1, 10);
+    $_SESSION['admin_captcha_answer'] = $num1 + $num2;
+    $captcha_question = "Quanto é $num1 + $num2?";
 }
 ?>
 <!DOCTYPE html>
@@ -83,6 +112,14 @@ endif; ?>
                 <label class="block text-xs font-mono text-gray-400 mb-2 uppercase">Senha</label>
                 <input type="password" name="password" required class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#00ffcc] transition-colors">
             </div>
+
+            <?php if ($show_captcha): ?>
+            <div class="bg-red-900/20 border border-red-500/50 p-4 rounded-xl">
+                <label class="block text-xs font-mono text-red-400 mb-2 uppercase tracking-widest">Verificação de Segurança</label>
+                <p class="text-sm text-gray-300 mb-3">Muitas tentativas falhas. <?php echo $captcha_question; ?></p>
+                <input type="number" name="captcha_answer" required class="w-full bg-black border border-red-500/50 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-red-500 transition-colors" placeholder="Sua resposta">
+            </div>
+            <?php endif; ?>
 
             <button type="submit" class="w-full py-4 text-black bg-[#00ffcc] hover:bg-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2">
                 Acessar Portal

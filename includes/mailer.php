@@ -16,14 +16,18 @@ require_once __DIR__ . '/../vendor/autoload.php';
  */
 function send_system_email($pdo, $to, $template_type, $variables = [])
 {
+    $debug_log = [];
+    
     try {
         // 1. Fetch SMTP settings
         $stmt = $pdo->query("SELECT smtp_host, smtp_user, smtp_pass, smtp_port, smtp_secure FROM settings WHERE id = 1");
         $settings = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$settings || empty($settings['smtp_host'])) {
-            error_log("Mailer Error: SMTP settings not configured in database.");
-            return false;
+            $error = "SMTP settings not configured in database.";
+            error_log("Mailer Error: " . $error);
+            file_put_contents(__DIR__ . '/../email_debug.log', date('Y-m-d H:i:s') . " - $error\n", FILE_APPEND);
+            return ['success' => false, 'error' => $error];
         }
 
         // 2. Fetch Template
@@ -32,8 +36,10 @@ function send_system_email($pdo, $to, $template_type, $variables = [])
         $template = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$template) {
-            error_log("Mailer Error: Template type '$template_type' not found.");
-            return false;
+            $error = "Template type '$template_type' not found in database.";
+            error_log("Mailer Error: " . $error);
+            file_put_contents(__DIR__ . '/../email_debug.log', date('Y-m-d H:i:s') . " - TO: $to, TEMPLATE: $template_type - $error\n", FILE_APPEND);
+            return ['success' => false, 'error' => $error];
         }
 
         $subject = $template['subject'];
@@ -75,16 +81,22 @@ function send_system_email($pdo, $to, $template_type, $variables = [])
         $mail->Body = $body;
 
         $mail->send();
-        return true;
+        
+        file_put_contents(__DIR__ . '/../email_debug.log', date('Y-m-d H:i:s') . " - SUCCESS - TO: $to, TEMPLATE: $template_type - SUBJECT: $subject\n", FILE_APPEND);
+        return ['success' => true];
 
     }
     catch (Exception $e) {
-        error_log("Mailer Error: {$mail->ErrorInfo}");
-        return false;
+        $error = $mail->ErrorInfo ?? $e->getMessage();
+        error_log("Mailer Error: " . $error);
+        file_put_contents(__DIR__ . '/../email_debug.log', date('Y-m-d H:i:s') . " - TO: $to, TEMPLATE: $template_type - ERROR: $error\n", FILE_APPEND);
+        return ['success' => false, 'error' => $error];
     }
     catch (\PDOException $e) {
-        error_log("Mailer PDO Error: " . $e->getMessage());
-        return false;
+        $error = $e->getMessage();
+        error_log("Mailer PDO Error: " . $error);
+        file_put_contents(__DIR__ . '/../email_debug.log', date('Y-m-d H:i:s') . " - TO: $to, TEMPLATE: $template_type - PDO ERROR: $error\n", FILE_APPEND);
+        return ['success' => false, 'error' => $error];
     }
 }
 ?>

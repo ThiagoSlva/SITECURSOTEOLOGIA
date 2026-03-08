@@ -14,6 +14,9 @@ $page_description = $page_description ?? $site_description;
 $page_image = $page_image ?? $site_image;
 $page_url = $page_url ?? $site_url;
 $page_type = $page_type ?? 'website';
+
+$is_logged_in = isset($_SESSION['user_id']);
+$user_name = $_SESSION['user_name'] ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR" class="scroll-smooth">
@@ -115,6 +118,12 @@ $page_type = $page_type ?? 'website';
             <div class="hidden md:flex items-center gap-8">
                 <a href="/cursos.php" class="text-xs font-mono uppercase tracking-widest text-gray-400 hover:text-white transition-colors">Cursos</a>
                 <a href="/blog.php" class="text-xs font-mono uppercase tracking-widest text-gray-400 hover:text-white transition-colors">Blog</a>
+                
+                <?php if ($is_logged_in): ?>
+                    <a href="/portal/index.php" class="text-xs font-mono uppercase tracking-widest text-neon-accent hover:text-white transition-colors">Portal do Aluno</a>
+                <?php else: ?>
+                    <a href="/login.php" class="text-xs font-mono uppercase tracking-widest text-gray-400 hover:text-white transition-colors">Login</a>
+                <?php endif; ?>
             </div>
             
             <!-- Mobile Menu Button -->
@@ -132,6 +141,11 @@ $page_type = $page_type ?? 'website';
             <div class="px-6 py-4 space-y-4">
                 <a href="/cursos.php" class="block text-sm font-medium text-gray-300 hover:text-white transition-colors">Cursos</a>
                 <a href="/blog.php" class="block text-sm font-medium text-gray-300 hover:text-white transition-colors">Blog</a>
+                <?php if ($is_logged_in): ?>
+                    <a href="/portal/index.php" class="block text-sm font-medium text-neon-accent hover:text-white transition-colors">Portal do Aluno</a>
+                <?php else: ?>
+                    <a href="/login.php" class="block text-sm font-medium text-gray-300 hover:text-white transition-colors">Login</a>
+                <?php endif; ?>
                 <a href="#planos" class="block w-full py-2 rounded-full bg-neon-accent text-black text-sm font-semibold hover:bg-neon-hover transition-colors text-center">Comprar Curso</a>
             </div>
         </div>

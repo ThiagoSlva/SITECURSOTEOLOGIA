@@ -30,6 +30,8 @@ $site_settings = $stmt_settings->fetch();
                     <li><a href="/cursos.php" class="text-gray-400 hover:text-neon-accent transition-colors text-sm font-medium">Todos os Cursos</a></li>
                     <li><a href="/blog.php" class="text-gray-400 hover:text-neon-accent transition-colors text-sm font-medium">Artigos Teológicos</a></li>
                     <li><a href="/admin/login.php" class="text-gray-400 hover:text-neon-accent transition-colors text-sm font-medium">Acesso Restrito</a></li>
+                    <li><a href="/politica-privacidade.php" class="text-gray-400 hover:text-neon-accent transition-colors text-sm font-medium">Política de Privacidade</a></li>
+                    <li><a href="/termos-de-uso.php" class="text-gray-400 hover:text-neon-accent transition-colors text-sm font-medium">Termos de Uso</a></li>
                 </ul>
             </div>
 

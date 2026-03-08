@@ -1,9 +1,9 @@
 # Configurações de SEO e Segurança
 
-# Forçar HTTPS (descomente após configurar SSL)
-# RewriteEngine On
-# RewriteCond %{HTTPS} off
-# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# Forçar HTTPS (Ativo - requires SSL certificate)
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # Forçar WWW (descomente se necessário)
 # RewriteEngine On

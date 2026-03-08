@@ -12,15 +12,20 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 $user_name = $_SESSION['user_name'];
+$user_email = $_SESSION['user_email'] ?? '';
+
+// Fetch WhatsApp Number
+$stmt = $pdo->query("SELECT whatsapp_number FROM settings WHERE id = 1");
+$settings = $stmt->fetch();
+$whatsapp_number = preg_replace('/[^0-9]/', '', $settings['whatsapp_number'] ?? '553192157857');
 
 // Fetch User's Purchased Courses
-// We look for orders linked to this user_id where the status implies they paid (CONFIRMED, RECEIVED, etc)
-// Note: Asaas uses specific statuses like CONFIRMED, RECEIVED, RECEIVED_IN_CASH for paid invoices.
+// Status: PAID (pago) ou DELIVERED (entregue)
 $stmt = $pdo->prepare("
     SELECT c.*, o.status as order_status, o.created_at as purchase_date 
     FROM courses c 
     INNER JOIN orders o ON c.id = o.course_id 
-    WHERE o.user_id = ? AND o.status IN ('CONFIRMED', 'RECEIVED', 'RECEIVED_IN_CASH')
+    WHERE o.user_id = ? AND o.status IN ('PAID', 'DELIVERED')
     ORDER BY o.created_at DESC
 ");
 $stmt->execute([$user_id]);
@@ -143,7 +148,11 @@ else: ?>
                                     <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]"></span>
                                     <span class="text-xs font-mono text-gray-400 uppercase tracking-widest">Matriculado</span>
                                 </div>
-                                <a href="#" onclick="alert('Módulo de Aulas em Breve. Este é apenas um portal demonstrativo.'); return false;" class="w-full py-4 text-center rounded-xl bg-white/10 text-white font-semibold hover:bg-white hover:text-black transition-colors block border border-white/5 hover:border-white">
+                                <?php
+                                $zap_message = "Olá! Gostaria de acessar o conteúdo do curso: " . $course['title'];
+                                $zap_url = "https://api.whatsapp.com/send?phone=" . $whatsapp_number . "&text=" . urlencode($zap_message);
+                                ?>
+                                <a href="<?php echo $zap_url; ?>" target="_blank" class="w-full py-4 text-center rounded-xl bg-white/10 text-white font-semibold hover:bg-white hover:text-black transition-colors block border border-white/5 hover:border-white">
                                     Acessar Aulas
                                 </a>
                             </div>
