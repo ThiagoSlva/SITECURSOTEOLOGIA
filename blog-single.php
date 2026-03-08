@@ -16,6 +16,12 @@ if (!$post) {
     die("<div class='text-center py-32 text-white font-mono'>[ ERRO FATAL: MANUSCRITO NÃO LOCALIZADO NO ARQUIVO ]</div>");
 }
 
+// Meta tags dinâmicas
+$page_title = $post['title'] . ' - Blog Teológico CGADRB';
+$page_description = substr(strip_tags($post['content']), 0, 160);
+$page_url = 'https://cgadrb.shopdix.com.br/blog-single.php?id=' . $id;
+$page_type = 'article';
+
 // Convert line breaks to paragraphs for basic rich text
 $content_lines = explode("\n", strip_tags($post['content']));
 $formatted_content = '';
@@ -26,6 +32,36 @@ foreach ($content_lines as $line) {
     }
 }
 ?>
+
+<!-- Schema.org Article -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "<?php echo addslashes($post['title']); ?>",
+    "description": "<?php echo addslashes(substr(strip_tags($post['content']), 0, 160)); ?>",
+    "author": {
+        "@type": "Person",
+        "name": "<?php echo addslashes($post['author_name'] ?? 'Coordenação CGADRB'); ?>"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Instituto Teológico CGADRB",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://cgadrb.shopdix.com.br/assets/images/logotipo.jpeg"
+        }
+    },
+    "datePublished": "<?php echo $post['created_at']; ?>",
+    "dateModified": "<?php echo $post['updated_at'] ?? $post['created_at']; ?>",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://cgadrb.shopdix.com.br/blog-single.php?id=<?php echo $id; ?>"
+    },
+    "articleSection": "Teologia",
+    "inLanguage": "pt-BR"
+}
+</script>
 
 <article class="pt-40 pb-32">
     <!-- Post Header -->

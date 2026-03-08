@@ -2,18 +2,64 @@
 // includes/header.php
 require_once __DIR__ . '/security.php';
 require_once __DIR__ . '/db.php';
+
+$site_name = 'Instituto Teológico CGADRB';
+$site_url = 'https://cgadrb.shopdix.com.br'; // Altere para seu domínio real
+$site_description = 'Cursos de extensão universitária em teologia com certificação reconhecida. Formação teológica de excelência combinando tradição cristã e rigor acadêmico contemporâneo.';
+$site_image = '/assets/images/logotipo.jpeg';
+$twitter_site = '@cgadrb';
+
+$page_title = $page_title ?? 'CGADRB - Cursos de Extensão Universitária';
+$page_description = $page_description ?? $site_description;
+$page_image = $page_image ?? $site_image;
+$page_url = $page_url ?? $site_url;
+$page_type = $page_type ?? 'website';
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CGADRB - Cursos de Extensão Universitária</title>
+    <title><?php echo htmlspecialchars($page_title); ?></title>
     
-    <!-- Fonts -->
+    <!-- Meta Tags SEO -->
+    <meta name="description" content="<?php echo htmlspecialchars($page_description); ?>">
+    <meta name="keywords" content="teologia, curso de teologia, extensão universitária, certificação MEC, formação cristã, cursos online, seminário teológico, bachelor theology, master theology">
+    <meta name="author" content="Instituto Teológico CGADRB">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="Portuguese">
+    <meta name="revisit-after" content="7 days">
+    <meta name="theme-color" content="#000000">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="<?php echo htmlspecialchars($page_url); ?>">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="<?php echo htmlspecialchars($page_type); ?>">
+    <meta property="og:url" content="<?php echo htmlspecialchars($page_url); ?>">
+    <meta property="og:title" content="<?php echo htmlspecialchars($page_title); ?>">
+    <meta property="og:description" content="<?php echo htmlspecialchars($page_description); ?>">
+    <meta property="og:image" content="<?php echo htmlspecialchars($site_url . $page_image); ?>">
+    <meta property="og:site_name" content="<?php echo htmlspecialchars($site_name); ?>">
+    <meta property="og:locale" content="pt_BR">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="<?php echo htmlspecialchars($page_url); ?>">
+    <meta name="twitter:title" content="<?php echo htmlspecialchars($page_title); ?>">
+    <meta name="twitter:description" content="<?php echo htmlspecialchars($page_description); ?>">
+    <meta name="twitter:image" content="<?php echo htmlspecialchars($site_url . $page_image); ?>">
+    <meta name="twitter:site" content="<?php echo htmlspecialchars($twitter_site); ?>">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="/assets/images/logotipo.jpeg">
+    <link rel="apple-touch-icon" href="/assets/images/logotipo.jpeg">
+    
+    <!-- Preconnect para Performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://unpkg.com">
     
     <!-- Tailwind CSS (CDN for rapid prototyping as requested) -->
     <script src="https://cdn.tailwindcss.com"></script>

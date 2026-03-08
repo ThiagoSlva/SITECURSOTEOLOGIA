@@ -1,11 +1,30 @@
 <?php
 // blog.php
+$page_title = 'Blog Teológico - Artigos e Reflexões | CGADRB';
+$page_description = 'Leia artigos teológicos, reflexões e conteúdos profundos curados pela coordenação da CGADRB. Estudos bíblicos, formação cristã e muito mais.';
+
 require_once __DIR__ . '/includes/header.php';
 
 // Fetch public posts
 $stmt = $pdo->query("SELECT b.*, a.name as author_name FROM blog_posts b LEFT JOIN admin_users a ON b.author_id = a.id ORDER BY b.created_at DESC");
 $posts = $stmt->fetchAll();
 ?>
+
+<!-- Schema.org Blog -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Blog Teológico CGADRB",
+    "description": "Artigos teológicos, reflexões e conteúdos profundos curados pela coordenação da CGADRB",
+    "url": "https://cgadrb.shopdix.com.br/blog.php",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Instituto Teológico CGADRB",
+        "url": "https://cgadrb.shopdix.com.br"
+    }
+}
+</script>
 
 <!-- HEADER BLOG -->
 <section class="relative pt-40 pb-20 overflow-hidden bg-black">

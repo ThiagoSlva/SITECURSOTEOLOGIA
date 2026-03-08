@@ -22,7 +22,39 @@ if (!$course) {
 
 $features = json_decode($course['features_json'], true) ?: [];
 $hasImage = !empty($course['image_url']);
+
+// Meta tags dinâmicas para SEO
+$page_title = $course['title'] . ' - Instituto Teológico CGADRB';
+$page_description = substr(strip_tags($course['description']), 0, 160);
+$page_image = $course['image_url'] ?? '/assets/images/logotipo.jpeg';
+$page_url = 'https://cgadrb.shopdix.com.br/curso-single.php?slug=' . $slug;
+$page_type = 'course';
 ?>
+
+<!-- Schema.org Course -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": "<?php echo addslashes($course['title']); ?>",
+    "description": "<?php echo addslashes(substr(strip_tags($course['description']), 0, 160)); ?>",
+    "image": "<?php echo $course['image_url'] ?? ''; ?>",
+    "provider": {
+        "@type": "Organization",
+        "name": "Instituto Teológico CGADRB",
+        "url": "https://cgadrb.shopdix.com.br"
+    },
+    "offers": {
+        "@type": "Offer",
+        "price": "<?php echo $course['price']; ?>",
+        "priceCurrency": "BRL",
+        "availability": "https://schema.org/InStock"
+    },
+    "coursePrerequisites": "Ensino médio completo",
+    "educationalLevel": "Extensão Universitária",
+    "inLanguage": "pt-BR"
+}
+</script>
 
 <!-- Course Header Hero -->
 <section class="relative pt-40 pb-20 overflow-hidden bg-black border-b border-deep-border">

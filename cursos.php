@@ -1,5 +1,8 @@
 <?php
 // cursos.php
+$page_title = 'Cursos de Teologia - Extensão Universitária | CGADRB';
+$page_description = 'Descubra nossos cursos de extensão universitária em teologia. Formação cristã com certificação reconhecida, flexibilidade de estudo online e conteúdo acadêmico de excelência.';
+
 require_once __DIR__ . '/includes/header.php';
 
 // Fetch Categories that have at least one active course
@@ -11,6 +14,10 @@ $stmt = $pdo->query("
     ORDER BY cat.name ASC
 ");
 $categories_list = $stmt->fetchAll();
+
+// Fetch all active courses for schema
+$stmt_courses = $pdo->query("SELECT * FROM courses WHERE status = 'active'");
+$all_courses = $stmt_courses->fetchAll();
 
 // Fetch courses without categories
 $stmt = $pdo->query("SELECT * FROM courses WHERE status = 'active' AND (category_id IS NULL OR category_id NOT IN (SELECT id FROM categories)) ORDER BY id DESC");
@@ -26,13 +33,11 @@ function render_course_card($course)
                 <div class="absolute inset-0 bg-black/20 z-10 group-hover:bg-transparent transition-colors"></div>
                 <img src="<?php echo sanitize_output($course['image_url']); ?>" alt="Capa" class="w-full h-full object-contain transform group-hover:scale-105 transition-transform duration-700">
             </div>
-        <?php
-    else: ?>
+        <?php else: ?>
             <div class="mb-4">
                 <span class="inline-block px-3 py-1 bg-white/5 text-gray-400 text-[10px] font-mono rounded-full tracking-widest uppercase">ID: <?php echo str_pad($course['id'], 3, '0', STR_PAD_LEFT); ?></span>
             </div>
-        <?php
-    endif; ?>
+        <?php endif; ?>
 
         <h3 class="text-2xl font-bold mb-3 group-hover:text-[#00ffcc] transition-colors"><?php echo sanitize_output($course['title']); ?></h3>
         <p class="text-gray-400 text-sm mb-6 leading-relaxed line-clamp-3"><?php echo sanitize_output($course['description']); ?></p>
@@ -42,9 +47,9 @@ function render_course_card($course)
         </div>
 
         <?php
-    $features = json_decode($course['features_json'], true);
-    if (is_array($features) && count($features) > 0):
-?>
+        $features = json_decode($course['features_json'], true);
+        if (is_array($features) && count($features) > 0):
+        ?>
         <div class="mb-10 flex-grow border-t border-white/5 pt-6">
             <h4 class="text-xs font-mono text-gray-500 uppercase tracking-widest mb-4">Núcleo Curricular</h4>
             <ul class="space-y-4 font-mono text-xs text-gray-300">
@@ -53,15 +58,12 @@ function render_course_card($course)
                     <span class="text-neon-accent mt-0.5">●</span>
                     <span><?php echo sanitize_output($feature); ?></span>
                 </li>
-                <?php
-        endforeach; ?>
+                <?php endforeach; ?>
             </ul>
         </div>
-        <?php
-    else: ?>
+        <?php else: ?>
             <div class="flex-grow"></div>
-        <?php
-    endif; ?>
+        <?php endif; ?>
 
         <div class="pt-6 border-t border-white/5 mt-auto">
             <a href="curso-single.php?slug=<?php echo sanitize_output($course['slug']); ?>" class="w-full py-4 flex items-center justify-between px-6 rounded-xl border border-white/20 text-sm font-semibold hover:bg-[#00ffcc] hover:text-black hover:border-[#00ffcc] transition-colors group/btn">
@@ -74,6 +76,35 @@ function render_course_card($course)
     return ob_get_clean();
 }
 ?>
+
+<!-- Schema.org para Course List -->
+<?php if (!empty($all_courses)): ?>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Cursos de Teologia",
+    "description": "Lista de cursos de extensão universitária em teologia do Instituto CGADRB",
+    "url": "https://cgadrb.shopdix.com.br/cursos.php",
+    "numberOfItems": <?php echo count($all_courses); ?>,
+    "itemListOrder": "https://schema.org/ItemListOrderDescending",
+    "itemListElement": [
+        <?php foreach (array_slice($all_courses, 0, 10) as $index => $course): ?>
+        {
+            "@type": "ListItem",
+            "position": <?php echo $index + 1; ?>,
+            "item": {
+                "@type": "Course",
+                "name": "<?php echo addslashes($course['title']); ?>",
+                "description": "<?php echo addslashes(substr(strip_tags($course['description']), 0, 100)); ?>",
+                "url": "https://cgadrb.shopdix.com.br/curso-single.php?slug=<?php echo $course['slug']; ?>"
+            }
+        }<?php echo ($index < min(count($all_courses), 10) - 1) ? ',' : ''; ?>
+        <?php endforeach; ?>
+    ]
+}
+</script>
+<?php endif; ?>
 
 <!-- GRID DE CURSOS POR CATEGORIA -->
 <section class="py-20 bg-deep-surface relative z-10 min-h-[50vh]">

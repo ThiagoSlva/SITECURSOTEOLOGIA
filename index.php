@@ -1,7 +1,65 @@
 <?php
 // index.php
+$page_title = 'Instituto Teológico CGADRB - Cursos de Extensão Universitária em Teologia';
+$page_description = 'Cursos de extensão universitária em teologia com certificação reconhecida pelo MEC. Formação teológica de excelência combinando tradição cristã e rigor acadêmico contemporâneo.';
+$page_type = 'website';
+
 require_once __DIR__ . '/includes/header.php';
 ?>
+
+<!-- Schema.org JSON-LD -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Instituto Teológico CGADRB",
+    "url": "https://cgadrb.shopdix.com.br",
+    "logo": "https://cgadrb.shopdix.com.br/assets/images/logotipo.jpeg",
+    "description": "Cursos de extensão universitária em teologia com certificação reconhecida. Formação teológica de excelência combinando tradição cristã e rigor acadêmico contemporâneo.",
+    "sameAs": [
+        "https://facebook.com/cgadrb",
+        "https://instagram.com/cgadrb",
+        "https://youtube.com/cgadrb"
+    ],
+    "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+55-SEU-TELEFONE",
+        "contactType": "customer service",
+        "availableLanguage": "Portuguese"
+    },
+    "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "BR",
+        "addressRegion": "SP"
+    }
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Instituto Teológico CGADRB",
+    "url": "https://cgadrb.shopdix.com.br",
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://cgadrb.shopdix.com.br/cursos.php?search={search_term_string}",
+        "query-input": "required name=search_term_string"
+    }
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "EducationalOccupationalProgram",
+    "name": "Cursos de Teologia",
+    "description": "Cursos de extensão universitária em teologia com certificação reconhecida pelo MEC.",
+    "provider": {
+        "@type": "Organization",
+        "name": "Instituto Teológico CGADRB",
+        "url": "https://cgadrb.shopdix.com.br"
+    }
+}
+</script>
 
 <!-- SECTION B: O PLANO DE ABERTURA (HERO) -->
 <section class="relative h-[100dvh] w-full flex items-end justify-start pb-20 overflow-hidden">
