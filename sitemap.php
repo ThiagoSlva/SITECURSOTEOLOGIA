@@ -1,72 +1,75 @@
 <?php
-// sitemap.php - Gerador dinâmico de sitemap
-error_reporting(0);
-ini_set('display_errors', 0);
-
-ob_start();
-header('Content-Type: application/xml; charset=utf-8');
-
+// sitemap.php
 require_once __DIR__ . '/includes/db.php';
 
-$baseUrl = 'https://cgadrb.shopdix.com.br';
+header("Content-Type: application/xml; charset=utf-8");
+echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
 
-$xml = '<?xml version="1.0" encoding="UTF-8"?>';
-$xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+$base_url = 'https://cgadrb.shopdix.com.br'; // Fallback base URL
+if (isset($_SERVER['HTTP_HOST'])) {
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+    $base_url = $protocol . "://" . $_SERVER['HTTP_HOST'];
+}
 
-// Páginas estáticas
-$staticPages = [
-    ['loc' => '/', 'priority' => '1.0', 'changefreq' => 'weekly'],
-    ['loc' => '/cursos.php', 'priority' => '0.9', 'changefreq' => 'daily'],
-    ['loc' => '/blog.php', 'priority' => '0.8', 'changefreq' => 'weekly'],
-    ['loc' => '/politica-privacidade.php', 'priority' => '0.5', 'changefreq' => 'monthly'],
-    ['loc' => '/termos-de-uso.php', 'priority' => '0.5', 'changefreq' => 'monthly'],
+$current_date = date('Y-m-d');
+
+// 1. Static Pages
+$static_pages = [
+    '/' => '1.0',
+    '/cursos.php' => '0.8',
+    '/blog.php' => '0.8',
+    '/login.php' => '0.5',
+    '/termos-de-uso.php' => '0.3',
+    '/politica-privacidade.php' => '0.3'
 ];
 
-foreach ($staticPages as $page) {
-    $xml .= '<url>';
-    $xml .= '<loc>' . $baseUrl . $page['loc'] . '</loc>';
-    $xml .= '<changefreq>' . $page['changefreq'] . '</changefreq>';
-    $xml .= '<priority>' . $page['priority'] . '</priority>';
-    $xml .= '</url>';
+foreach ($static_pages as $url => $priority) {
+    echo "  <url>\n";
+    echo "    <loc>" . htmlspecialchars($base_url . $url) . "</loc>\n";
+    echo "    <lastmod>{$current_date}</lastmod>\n";
+    echo "    <changefreq>weekly</changefreq>\n";
+    echo "    <priority>{$priority}</priority>\n";
+    echo "  </url>\n";
 }
 
-// Cursos do banco de dados
+// 2. Dynamic Course Pages
 try {
-    $stmt = $pdo->query("SELECT slug, updated_at FROM courses WHERE status = 'active'");
+    $stmt = $pdo->query("SELECT slug, updated_at FROM courses WHERE status = 'active' ORDER BY id DESC");
     $courses = $stmt->fetchAll();
-    
+
     foreach ($courses as $course) {
-        $lastmod = !empty($course['updated_at']) ? date('c', strtotime($course['updated_at'])) : date('c');
-        $xml .= '<url>';
-        $xml .= '<loc>' . $baseUrl . '/curso-single.php?slug=' . htmlspecialchars($course['slug']) . '</loc>';
-        $xml .= '<changefreq>weekly</changefreq>';
-        $xml .= '<priority>0.7</priority>';
-        $xml .= '<lastmod>' . $lastmod . '</lastmod>';
-        $xml .= '</url>';
+        $lastmod = date('Y-m-d', strtotime($course['updated_at'] ?? $current_date));
+        echo "  <url>\n";
+        echo "    <loc>" . htmlspecialchars($base_url . '/curso-single.php?slug=' . $course['slug']) . "</loc>\n";
+        echo "    <lastmod>{$lastmod}</lastmod>\n";
+        echo "    <changefreq>monthly</changefreq>\n";
+        echo "    <priority>0.9</priority>\n";
+        echo "  </url>\n";
     }
-} catch (Exception $e) {
-    // Silencioso se falhar
+}
+catch (Exception $e) {
+// Ignore DB errors safely
 }
 
-// Posts do blog
+// 3. Dynamic Blog Pages
 try {
-    $stmt = $pdo->query("SELECT slug, updated_at FROM blog_posts WHERE status = 'published'");
+    $stmt = $pdo->query("SELECT slug, updated_at FROM blog_posts WHERE status = 'published' ORDER BY id DESC");
     $posts = $stmt->fetchAll();
-    
+
     foreach ($posts as $post) {
-        $lastmod = !empty($post['updated_at']) ? date('c', strtotime($post['updated_at'])) : date('c');
-        $xml .= '<url>';
-        $xml .= '<loc>' . $baseUrl . '/blog-single.php?id=' . htmlspecialchars($post['slug']) . '</loc>';
-        $xml .= '<changefreq>monthly</changefreq>';
-        $xml .= '<priority>0.6</priority>';
-        $xml .= '<lastmod>' . $lastmod . '</lastmod>';
-        $xml .= '</url>';
+        $lastmod = date('Y-m-d', strtotime($post['updated_at'] ?? $current_date));
+        echo "  <url>\n";
+        echo "    <loc>" . htmlspecialchars($base_url . '/blog-post.php?slug=' . $post['slug']) . "</loc>\n";
+        echo "    <lastmod>{$lastmod}</lastmod>\n";
+        echo "    <changefreq>monthly</changefreq>\n";
+        echo "    <priority>0.7</priority>\n";
+        echo "  </url>\n";
     }
-} catch (Exception $e) {
-    // Silencioso se falhar
+}
+catch (Exception $e) {
+// Ignore DB errors safely
 }
 
-$xml .= '</urlset>';
-
-ob_end_clean();
-echo $xml;
+echo '</urlset>';
+?>

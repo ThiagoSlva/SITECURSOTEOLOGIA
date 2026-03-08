@@ -1,15 +1,7 @@
 User-agent: *
-Allow: /
 Disallow: /admin/
-Disallow: /portal/
 Disallow: /includes/
-Disallow: /assets/
-Disallow: /vendor/
-Disallow: /*.php$
-Allow: /index.php
-Allow: /cursos.php
-Allow: /curso-single.php
-Allow: /blog.php
-Allow: /blog-single.php
+Disallow: /api/
+Disallow: /portal/includes/
 
 Sitemap: https://cgadrb.shopdix.com.br/sitemap.php
