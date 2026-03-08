@@ -1,0 +1,26 @@
+{
+  "name": "sitecursoteologia",
+  "version": "1.0.0",
+  "main": "tailwind.config.js",
+  "scripts": {
+    "build": "tailwindcss -i ./assets/css/styles.css -o ./assets/css/tailwind.css --minify",
+    "watch": "tailwindcss -i ./assets/css/styles.css -o ./assets/css/tailwind.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThiagoSlva/SITECURSOTEOLOGIA.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ThiagoSlva/SITECURSOTEOLOGIA/issues"
+  },
+  "homepage": "https://github.com/ThiagoSlva/SITECURSOTEOLOGIA#readme",
+  "description": "",
+  "devDependencies": {
+    "autoprefixer": "^10.4.27",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^4.2.1"
+  }
+}

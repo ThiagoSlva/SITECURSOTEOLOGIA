@@ -64,31 +64,8 @@ $user_name = $_SESSION['user_name'] ?? '';
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="preconnect" href="https://unpkg.com">
     
-    <!-- Tailwind CSS (CDN for rapid prototyping as requested) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    },
-                    colors: {
-                        'deep-space': '#000000',
-                        'deep-surface': '#0a0a0c',
-                        'deep-border': 'rgba(255, 255, 255, 0.1)',
-                        'neon-accent': '#00ffcc',
-                        'neon-hover': '#00e6b8',
-                    },
-                    backgroundImage: {
-                        'hero-gradient': 'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 70%, rgba(0,0,0,1) 100%)',
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Tailwind CSS (Compiled Locally) -->
+    <link rel="stylesheet" href="/assets/css/tailwind.css">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/assets/css/styles.css">
@@ -121,9 +98,11 @@ $user_name = $_SESSION['user_name'] ?? '';
                 
                 <?php if ($is_logged_in): ?>
                     <a href="/portal/index.php" class="text-xs font-mono uppercase tracking-widest text-neon-accent hover:text-white transition-colors">Portal do Aluno</a>
-                <?php else: ?>
+                <?php
+else: ?>
                     <a href="/login.php" class="text-xs font-mono uppercase tracking-widest text-gray-400 hover:text-white transition-colors">Login</a>
-                <?php endif; ?>
+                <?php
+endif; ?>
             </div>
             
             <!-- Mobile Menu Button -->
@@ -143,9 +122,11 @@ $user_name = $_SESSION['user_name'] ?? '';
                 <a href="/blog.php" class="block text-sm font-medium text-gray-300 hover:text-white transition-colors">Blog</a>
                 <?php if ($is_logged_in): ?>
                     <a href="/portal/index.php" class="block text-sm font-medium text-neon-accent hover:text-white transition-colors">Portal do Aluno</a>
-                <?php else: ?>
+                <?php
+else: ?>
                     <a href="/login.php" class="block text-sm font-medium text-gray-300 hover:text-white transition-colors">Login</a>
-                <?php endif; ?>
+                <?php
+endif; ?>
                 <a href="#planos" class="block w-full py-2 rounded-full bg-neon-accent text-black text-sm font-semibold hover:bg-neon-hover transition-colors text-center">Comprar Curso</a>
             </div>
         </div>

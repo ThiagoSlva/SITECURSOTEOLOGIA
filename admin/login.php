@@ -75,7 +75,7 @@ if ($show_captcha) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Administração CGADRB</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/assets/css/tailwind.css">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #050505; color: white;}
     </style>
@@ -119,7 +119,8 @@ endif; ?>
                 <p class="text-sm text-gray-300 mb-3">Muitas tentativas falhas. <?php echo $captcha_question; ?></p>
                 <input type="number" name="captcha_answer" required class="w-full bg-black border border-red-500/50 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-red-500 transition-colors" placeholder="Sua resposta">
             </div>
-            <?php endif; ?>
+            <?php
+endif; ?>
 
             <button type="submit" class="w-full py-4 text-black bg-[#00ffcc] hover:bg-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2">
                 Acessar Portal

@@ -72,20 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $valid_token) {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'], },
-                    colors: {
-                        'deep-space': '#000000', 'deep-surface': '#0a0a0c', 'deep-border': 'rgba(255, 255, 255, 0.1)',
-                        'neon-accent': '#00ffcc'
-                    }
-                }
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="/assets/css/tailwind.css">
 </head>
 <body class="bg-deep-space text-white font-sans antialiased min-h-screen flex items-center justify-center relative overflow-hidden p-6">
 

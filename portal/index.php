@@ -42,31 +42,8 @@ $purchased_courses = $stmt->fetchAll();
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS (CDN) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    },
-                    colors: {
-                        'deep-space': '#000000',
-                        'deep-surface': '#0a0a0c',
-                        'deep-border': 'rgba(255, 255, 255, 0.1)',
-                        'neon-accent': '#00ffcc',
-                        'neon-hover': '#00e6b8',
-                    },
-                    backgroundImage: {
-                        'hero-gradient': 'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 70%, rgba(0,0,0,1) 100%)',
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Tailwind CSS (Compiled Locally) -->
+    <link rel="stylesheet" href="/assets/css/tailwind.css">
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/assets/css/styles.css">
@@ -149,9 +126,9 @@ else: ?>
                                     <span class="text-xs font-mono text-gray-400 uppercase tracking-widest">Matriculado</span>
                                 </div>
                                 <?php
-                                $zap_message = "Olá! Gostaria de acessar o conteúdo do curso: " . $course['title'];
-                                $zap_url = "https://api.whatsapp.com/send?phone=" . $whatsapp_number . "&text=" . urlencode($zap_message);
-                                ?>
+        $zap_message = "Olá! Gostaria de acessar o conteúdo do curso: " . $course['title'];
+        $zap_url = "https://api.whatsapp.com/send?phone=" . $whatsapp_number . "&text=" . urlencode($zap_message);
+?>
                                 <a href="<?php echo $zap_url; ?>" target="_blank" class="w-full py-4 text-center rounded-xl bg-white/10 text-white font-semibold hover:bg-white hover:text-black transition-colors block border border-white/5 hover:border-white">
                                     Acessar Aulas
                                 </a>

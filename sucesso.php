@@ -36,7 +36,7 @@ $whatsapp_url = "https://api.whatsapp.com/send?phone=" . $phone . "&text=" . url
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Processando Pedido - CGADRB</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/assets/css/tailwind.css">
     <style>
         .loader {
             border: 3px solid rgba(255,255,255,0.1);
