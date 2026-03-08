@@ -1,3 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
 /* CGADRB Cursos Teológicos - Custom Styles */
 
 /* Base Styles */
@@ -36,6 +41,7 @@ html {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -43,18 +49,24 @@ html {
 }
 
 @keyframes pulse {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 1;
     }
+
     50% {
         opacity: 0.5;
     }
 }
 
 @keyframes float {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0px);
     }
+
     50% {
         transform: translateY(-10px);
     }
@@ -82,10 +94,10 @@ html {
 
 /* Hero Section Styles */
 .hero-gradient-overlay {
-    background: linear-gradient(135deg, 
-        rgba(0, 255, 204, 0.1) 0%, 
-        rgba(0, 0, 0, 0.8) 50%, 
-        rgba(0, 0, 0, 1) 100%);
+    background: linear-gradient(135deg,
+            rgba(0, 255, 204, 0.1) 0%,
+            rgba(0, 0, 0, 0.8) 50%,
+            rgba(0, 0, 0, 1) 100%);
 }
 
 /* Course Cards */
@@ -199,11 +211,11 @@ html {
         font-size: 2.5rem;
         line-height: 1.2;
     }
-    
+
     .course-card {
         margin-bottom: 1rem;
     }
-    
+
     .navbar {
         width: 95%;
         top: 1rem;
@@ -212,11 +224,12 @@ html {
 
 /* Print Styles */
 @media print {
+
     .navbar,
     .noise-overlay {
         display: none !important;
     }
-    
+
     body {
         background: white !important;
         color: black !important;
