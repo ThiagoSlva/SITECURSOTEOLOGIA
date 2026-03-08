@@ -12,6 +12,7 @@ require_login();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Administrativo - CGADRB</title>
+    <link rel="icon" href="/assets/images/brasao.jpeg" type="image/jpeg">
     <link rel="stylesheet" href="/assets/css/tailwind.css">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #050505; color: white;}

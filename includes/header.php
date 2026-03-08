@@ -24,6 +24,7 @@ $user_name = $_SESSION['user_name'] ?? '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($page_title); ?></title>
+    <link rel="icon" href="/assets/images/brasao.jpeg" type="image/jpeg">
     
     <!-- Meta Tags SEO -->
     <meta name="description" content="<?php echo htmlspecialchars($page_description); ?>">
