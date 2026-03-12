@@ -5,11 +5,11 @@ require_once __DIR__ . '/db.php';
 
 $site_name = 'Instituto Teológico CGADRB';
 $site_url = 'https://cgadrb.shopdix.com.br'; // Altere para seu domínio real
-$site_description = 'Cursos de extensão universitária em teologia com certificação reconhecida. Formação teológica de excelência combinando tradição cristã e rigor acadêmico contemporâneo.';
+$site_description = 'Cursos de extensão Instituto CAT em teologia com certificação reconhecida. Formação teológica de excelência combinando tradição cristã e rigor acadêmico contemporâneo.';
 $site_image = '/assets/images/logotipo.jpeg';
 $twitter_site = '@cgadrb';
 
-$page_title = $page_title ?? 'CGADRB - Cursos de Extensão Universitária';
+$page_title = $page_title ?? 'CGADRB - Cursos de Extensão Instituto CAT';
 $page_description = $page_description ?? $site_description;
 $page_image = $page_image ?? $site_image;
 $page_url = $page_url ?? $site_url;

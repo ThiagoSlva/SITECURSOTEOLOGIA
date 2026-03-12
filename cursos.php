@@ -1,7 +1,7 @@
 <?php
 // cursos.php
-$page_title = 'Cursos de Teologia - Extensão Universitária | CGADRB';
-$page_description = 'Descubra nossos cursos de extensão universitária em teologia. Formação cristã com certificação reconhecida, flexibilidade de estudo online e conteúdo acadêmico de excelência.';
+$page_title = 'Cursos de Teologia - Extensão Instituto CAT | CGADRB';
+$page_description = 'Descubra nossos cursos de extensão Instituto CAT em teologia. Formação cristã com certificação reconhecida, flexibilidade de estudo online e conteúdo acadêmico de excelência.';
 
 require_once __DIR__ . '/includes/header.php';
 
@@ -84,7 +84,7 @@ function render_course_card($course)
     "@context": "https://schema.org",
     "@type": "ItemList",
     "name": "Cursos de Teologia",
-    "description": "Lista de cursos de extensão universitária em teologia do Instituto CGADRB",
+    "description": "Lista de cursos de extensão Instituto CAT em teologia do Instituto CGADRB",
     "url": "https://cgadrb.shopdix.com.br/cursos.php",
     "numberOfItems": <?php echo count($all_courses); ?>,
     "itemListOrder": "https://schema.org/ItemListOrderDescending",

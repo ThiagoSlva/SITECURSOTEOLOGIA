@@ -1,7 +1,7 @@
 <?php
 // index.php
-$page_title = 'Instituto Teológico CGADRB - Cursos de Extensão Universitária em Teologia';
-$page_description = 'Cursos de extensão universitária em teologia com certificação reconhecida pelo MEC. Formação teológica de excelência combinando tradição cristã e rigor acadêmico contemporâneo.';
+$page_title = 'Instituto Teológico CGADRB - Cursos de Extensão Instituto CAT em Teologia';
+$page_description = 'Cursos de extensão Instituto CAT em teologia com certificação reconhecida pelo MEC. Formação teológica de excelência combinando tradição cristã e rigor acadêmico contemporâneo.';
 $page_type = 'website';
 
 require_once __DIR__ . '/includes/header.php';
@@ -15,7 +15,7 @@ require_once __DIR__ . '/includes/header.php';
     "name": "Instituto Teológico CGADRB",
     "url": "https://cgadrb.shopdix.com.br",
     "logo": "https://cgadrb.shopdix.com.br/assets/images/logotipo.jpeg",
-    "description": "Cursos de extensão universitária em teologia com certificação reconhecida. Formação teológica de excelência combinando tradição cristã e rigor acadêmico contemporâneo.",
+    "description": "Cursos de extensão Instituto CAT em teologia com certificação reconhecida. Formação teológica de excelência combinando tradição cristã e rigor acadêmico contemporâneo.",
     "sameAs": [
         "https://facebook.com/cgadrb",
         "https://instagram.com/cgadrb",
@@ -52,7 +52,7 @@ require_once __DIR__ . '/includes/header.php';
     "@context": "https://schema.org",
     "@type": "EducationalOccupationalProgram",
     "name": "Cursos de Teologia",
-    "description": "Cursos de extensão universitária em teologia com certificação reconhecida pelo MEC.",
+    "description": "Cursos de extensão Instituto CAT em teologia com certificação reconhecida pelo MEC.",
     "provider": {
         "@type": "Organization",
         "name": "Instituto Teológico CGADRB",
@@ -82,7 +82,7 @@ require_once __DIR__ . '/includes/header.php';
             </h1>
             
             <p class="mt-8 text-xl md:text-2xl text-gray-400 font-light max-w-2xl leading-relaxed gsap-reveal">
-                Cursos de extensão universitária que combinam a tradição cristã com o rigor do design acadêmico contemporâneo.
+                Cursos de extensão Instituto CAT que combinam a tradição cristã com o rigor do design acadêmico contemporâneo.
             </p>
 
             <div class="mt-12 flex flex-col sm:flex-row items-start sm:items-center gap-6 gsap-reveal">
