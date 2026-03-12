@@ -111,7 +111,7 @@ function render_course_card($course)
     <div class="max-w-7xl mx-auto px-6">
         
         <?php if (empty($categories_list) && empty($uncategorized_courses)): ?>
-            <div class="text-center text-gray-400 py-20 font-mono text-sm border border-deep-border rounded-3xl bg-deep-space">
+            <div class="text-center text-gray-500 py-20 font-mono text-sm border border-white/5 rounded-3xl bg-black">
                 [ NENHUM SINAL DE CURSO CARREGADO ]
             </div>
         <?php

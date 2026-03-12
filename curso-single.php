@@ -109,16 +109,16 @@ endif; ?>
             <!-- Main Content Area -->
             <div class="lg:col-span-8">
                 <?php if ($hasImage): ?>
-                    <div class="aspect-video w-full rounded-3xl overflow-hidden border border-deep-border shadow-2xl mb-16 relative group gsap-reveal bg-deep-space">
+                    <div class="aspect-video w-full rounded-3xl overflow-hidden border border-white/10 shadow-2xl mb-16 relative group gsap-reveal bg-black">
                         <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors z-10"></div>
                         <img src="<?php echo sanitize_output($course['image_url']); ?>" alt="<?php echo sanitize_output($course['title']); ?>" class="w-full h-full object-contain">
                     </div>
                 <?php
 endif; ?>
 
-                <div class="prose <?php echo ($site_theme === 'dark') ? 'prose-invert' : ''; ?> prose-lg prose-p:text-muted prose-headings:text-main max-w-none gsap-reveal font-sans">
+                <div class="prose prose-invert prose-lg prose-p:text-gray-400 prose-headings:text-white max-w-none gsap-reveal font-sans">
                     <h2 class="text-3xl font-bold tracking-tight mb-6">Sobre o Curso</h2>
-                    <div class="bg-deep-surface p-8 rounded-2xl border border-deep-border mb-12">
+                    <div class="bg-black/40 p-8 rounded-2xl border border-white/5 mb-12">
                         <p class="whitespace-pre-line leading-relaxed"><?php echo sanitize_output($course['description']); ?></p>
                     </div>
 
@@ -126,7 +126,7 @@ endif; ?>
                         <h2 class="text-3xl font-bold tracking-tight mb-8">Núcleo Curricular</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <?php foreach ($features as $feature): ?>
-                                <div class="bg-deep-surface border border-deep-border p-6 rounded-2xl flex items-start gap-4 hover:border-neon-accent/30 transition-colors">
+                                <div class="bg-black border border-white/5 p-6 rounded-2xl flex items-start gap-4 hover:border-white/10 transition-colors">
                                     <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center flex-shrink-0 text-[#00ffcc]">
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
                                     </div>
@@ -142,7 +142,7 @@ endif; ?>
 
             <!-- Sticky Sidebar -->
             <div class="lg:col-span-4">
-                <div class="sticky top-32 bg-deep-surface border border-deep-border p-8 rounded-3xl shadow-xl gsap-reveal">
+                <div class="sticky top-32 bg-black border border-white/10 p-8 rounded-3xl shadow-xl gsap-reveal">
                     <h3 class="font-bold text-xl mb-6 flex items-center gap-3">
                         <span class="w-3 h-3 rounded-full bg-[#00ffcc]"></span> Resumo da Admissão
                     </h3>

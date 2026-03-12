@@ -17,14 +17,9 @@ $page_type = $page_type ?? 'website';
 
 $is_logged_in = isset($_SESSION['user_id']);
 $user_name = $_SESSION['user_name'] ?? '';
-
-// Fetch site settings
-$stmt = $pdo->query("SELECT * FROM settings WHERE id = 1");
-$settings = $stmt->fetch();
-$site_theme = $settings['site_theme'] ?? 'dark';
 ?>
 <!DOCTYPE html>
-<html lang="pt-BR" class="scroll-smooth" data-theme="<?php echo $site_theme; ?>">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -79,7 +74,7 @@ $site_theme = $settings['site_theme'] ?? 'dark';
     <!-- Lenis Smooth Scroll -->
     <link rel="stylesheet" href="https://unpkg.com/lenis@1.1.9/dist/lenis.css">
 </head>
-<body class="bg-deep-space text-main antialiased font-sans selection:bg-neon-accent selection:text-black min-h-screen flex flex-col relative overflow-x-hidden">
+<body class="bg-deep-space text-white antialiased font-sans selection:bg-neon-accent selection:text-black min-h-screen flex flex-col relative overflow-x-hidden">
 
     <!-- Global Noise Overlay -->
     <div class="pointer-events-none fixed inset-0 z-50 h-full w-full opacity-[0.04]">

@@ -172,7 +172,7 @@ require_once __DIR__ . '/includes/header.php';
 </section>
 
 <!-- SECTION D: PHILOSOPHY -->
-<section class="py-32 bg-deep-space relative border-y border-deep-border overflow-hidden flex items-center min-h-[70vh]">
+<section class="py-32 bg-black relative border-y border-deep-border overflow-hidden flex items-center min-h-[70vh]">
     <div class="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1601569482813-f66f91880f08?auto=format&fit=crop&q=80')] bg-cover bg-center blend-luminosity gsap-parallax"></div>
     <div class="max-w-5xl mx-auto px-6 relative z-10 text-center">
         <p class="text-xl md:text-3xl text-gray-500 font-light tracking-wide mb-8 gsap-reveal">A maioria foca em certificados vazios.</p>
@@ -270,7 +270,7 @@ endif; ?>
 </section>
 
 <!-- SECTION G: AMPARO LEGAL -->
-<section class="py-16 bg-deep-space border-t border-deep-border relative z-10">
+<section class="py-16 bg-black border-t border-white/5 relative z-10">
     <div class="max-w-4xl mx-auto px-6 text-center">
         <div class="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 text-gray-500">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4M12 16h.01"/></svg>
