@@ -45,13 +45,13 @@ $posts = $stmt->fetchAll();
     <div class="max-w-5xl mx-auto px-6 space-y-12">
         
         <?php if (empty($posts)): ?>
-            <div class="text-center text-gray-500 py-20 font-mono text-sm border border-white/5 rounded-3xl bg-black">
+            <div class="text-center text-gray-400 py-20 font-mono text-sm border border-deep-border rounded-3xl bg-deep-space">
                 [ NENHUM ARTIGO PUBLICADO NO MOMENTO ]
             </div>
         <?php
 else: ?>
             <?php foreach ($posts as $post): ?>
-                <article class="group relative bg-[#0a0a0c] border border-white/5 p-8 md:p-12 rounded-[2rem] hover:border-white/20 transition-all duration-700 gsap-reveal">
+                <article class="group relative bg-deep-space border border-deep-border p-8 md:p-12 rounded-[2rem] hover:border-neon-accent/30 transition-all duration-700 gsap-reveal">
                     
                     <div class="flex flex-col md:flex-row gap-8 items-start">
                         <!-- Metadados Esquerda -->

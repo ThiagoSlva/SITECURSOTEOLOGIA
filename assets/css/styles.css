@@ -3,6 +3,25 @@
 @tailwind utilities;
 
 
+/* Theme Variables */
+:root {
+    --bg-deep-space: #000000;
+    --bg-deep-surface: #0a0a0c;
+    --border-deep: rgba(255, 255, 255, 0.1);
+    --text-main: #ffffff;
+    --text-muted: #9ca3af; /* gray-400 */
+    --neon-accent: #00ffcc;
+    --neon-hover: #00e6b8;
+}
+
+[data-theme="light"] {
+    --bg-deep-space: #f8fafc; /* slate-50 */
+    --bg-deep-surface: #ffffff;
+    --border-deep: rgba(0, 0, 0, 0.05);
+    --text-main: #0f172a; /* slate-900 */
+    --text-muted: #64748b; /* slate-500 */
+}
+
 /* CGADRB Cursos Teológicos - Custom Styles */
 
 /* Base Styles */

@@ -17,13 +17,12 @@ module.exports = {
                 mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular'],
             },
             colors: {
-                // Deep Space Tech Theme Options
-                'deep-space': '#000000',
-                'deep-surface': '#0a0a0c',
-                'deep-border': 'rgba(255, 255, 255, 0.1)',
-                'neon-accent': '#00ffcc', // Vibrant cyan/green
+                'deep-space': 'var(--bg-deep-space)',
+                'deep-surface': 'var(--bg-deep-surface)',
+                'deep-border': 'var(--border-deep)',
+                'neon-accent': 'var(--neon-accent)',
                 'cobalt-accent': '#0055ff',
-                'neon-hover': '#00e6b8',
+                'neon-hover': 'var(--neon-hover)',
             },
             backgroundImage: {
                 'hero-gradient': 'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 70%, rgba(0,0,0,1) 100%)',

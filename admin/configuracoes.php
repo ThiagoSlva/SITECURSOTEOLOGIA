@@ -24,9 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $smtp_pass = filter_input(INPUT_POST, 'smtp_pass', FILTER_SANITIZE_STRING);
         $smtp_port = filter_input(INPUT_POST, 'smtp_port', FILTER_VALIDATE_INT);
         $smtp_secure = filter_input(INPUT_POST, 'smtp_secure', FILTER_SANITIZE_STRING);
+        $site_theme = filter_input(INPUT_POST, 'site_theme', FILTER_SANITIZE_STRING) ?: 'dark';
 
-        $stmt = $pdo->prepare("UPDATE settings SET asaas_api_key = ?, whatsapp_number = ?, social_facebook = ?, social_instagram = ?, social_twitter = ?, social_threads = ?, social_linkedin = ?, social_tiktok = ?, smtp_host = ?, smtp_user = ?, smtp_pass = ?, smtp_port = ?, smtp_secure = ? WHERE id = 1");
-        if ($stmt->execute([$asaas_key, $whatsapp, $fb, $ig, $tw, $th, $li, $tt, $smtp_host, $smtp_user, $smtp_pass, $smtp_port, $smtp_secure])) {
+        $stmt = $pdo->prepare("UPDATE settings SET asaas_api_key = ?, whatsapp_number = ?, social_facebook = ?, social_instagram = ?, social_twitter = ?, social_threads = ?, social_linkedin = ?, social_tiktok = ?, smtp_host = ?, smtp_user = ?, smtp_pass = ?, smtp_port = ?, smtp_secure = ?, site_theme = ? WHERE id = 1");
+        if ($stmt->execute([$asaas_key, $whatsapp, $fb, $ig, $tw, $th, $li, $tt, $smtp_host, $smtp_user, $smtp_pass, $smtp_port, $smtp_secure, $site_theme])) {
             $success = "Configurações atualizadas com sucesso.";
         }
         else {
@@ -73,6 +74,12 @@ endif; ?>
 
             <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-wide">WhatsApp Atendimento</label>
             <input type="text" name="whatsapp_number" value="<?php echo sanitize_output($settings['whatsapp_number'] ?? ''); ?>" placeholder="5511999999999" class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#00ffcc] transition-colors font-mono text-sm">
+
+            <label class="block text-xs font-mono text-gray-400 mb-2 uppercase tracking-wide mt-4">Tema do Site</label>
+            <select name="site_theme" class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#00ffcc] transition-colors font-mono text-sm">
+                <option value="dark" <?php echo (($settings['site_theme'] ?? 'dark') === 'dark') ? 'selected' : ''; ?>>Escuro (Deep Space)</option>
+                <option value="light" <?php echo (($settings['site_theme'] ?? '') === 'light') ? 'selected' : ''; ?>>Claro (Modern Light)</option>
+            </select>
         </div>
 
         <div class="mb-6 border-t border-white/5 pt-6">
