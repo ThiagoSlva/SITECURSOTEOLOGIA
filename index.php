@@ -123,7 +123,7 @@ require_once __DIR__ . '/includes/header.php';
                         <div class="h-2 w-1/2 bg-gray-800 rounded mt-2"></div>
                     </div>
                      <div class="bg-gray-800/80 backdrop-blur-md p-4 rounded-xl border border-white/10 shadow-2xl transform -translate-y-4 group-hover:-translate-y-12 transition-transform duration-700 select-none">
-                        <p class="font-mono text-xs text-white">RECONHECIMENTO MEC</p>
+                        <p class="font-mono text-xs text-white">RECONHECIMENTO</p>
                         <div class="h-2 w-full bg-neon-accent/20 rounded mt-3"></div>
                         <div class="h-2 w-2/3 bg-gray-700 rounded mt-2"></div>
                     </div>
